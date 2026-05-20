@@ -222,6 +222,135 @@
   background: rgba(248, 81, 73, 0.25);
 }
 
+/* Change letter button */
+.change-letter {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: all 0.15s;
+  margin-left: 2px;
+}
+.change-letter:hover { color: var(--teal); background: var(--teal-dim); }
+
+/* Onboarding screen */
+.onboard-overlay {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: 24px;
+}
+.onboard-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.onboard-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+.onboard-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+.onboard-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: -8px 0 0;
+}
+.onboard-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  margin: 4px 0;
+}
+.onboard-prompt {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.onboard-letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 360px;
+}
+.letter-btn {
+  width: 42px;
+  height: 42px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.letter-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--teal-border);
+}
+.letter-btn.selected {
+  background: var(--teal-dim);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.onboard-or {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+.onboard-input-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+.onboard-input {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0 !important;
+}
+.onboard-skip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-top: 4px;
+  transition: color 0.15s;
+}
+.onboard-skip:hover { color: var(--text-secondary); }
+
 /* Footer */
 .footer {
   padding: 16px 24px;
