@@ -178,7 +178,7 @@ export default function Leaderboard({ week, weeks, names, unblinded, currentUser
   const maxPthr = sorted.length > 0 ? sorted.reduce((m, p) => Math.max(m, p.pthr), 0) : 0;
   const maxAapr = sorted.length > 0 ? sorted.reduce((m, p) => Math.max(m, p.pace || 0), 0) : 0;
 
-  if (!week) return <div className="lb-empty">No data available.</div>;
+  if (!week && !seasonMode) return <div className="lb-empty">No data available.</div>;
 
   function displayName(p) {
     if (!unblinded) return p.letter;
