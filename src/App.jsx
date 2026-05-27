@@ -113,7 +113,7 @@ export default function App() {
               <h1 className="header-title">Physician Productivity</h1>
               <p className="header-sub">
                 {currentUser !== '?' && (
-                  <>You are <strong>Letter {currentUser}</strong> · </>
+                  <>You are <strong>Letter {currentUser}</strong> <button onClick={() => setCurrentUser(null)} title="Change your letter" style={{background:'none',border:'none',cursor:'pointer',fontSize:'14px',padding:'0 2px',verticalAlign:'middle',opacity:0.6}}>✏️</button> · </>
                 )}
                 Vituity / Trinity Health
               </p>
