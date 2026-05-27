@@ -265,6 +265,83 @@
 .toggle-pill.on { background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border); }
 .toggle-pill.off { background: var(--bg-hover); color: var(--text-muted); border: 1px solid var(--border); }
 .setting-input { flex-shrink: 0; }
+/* Mode tabs */
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mode-tab {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-tab:hover { color: var(--text-primary); }
+.mode-tab.active {
+  background: var(--teal-dim);
+  border-color: var(--teal-border);
+  color: var(--teal);
+}
+
+/* Paste section */
+.paste-section { display: flex; flex-direction: column; gap: 16px; }
+.field-hint { font-weight: 400; color: var(--text-muted); text-transform: none; letter-spacing: 0; font-size: 11px; }
+.paste-area { min-height: 180px; font-size: 12px; }
+.parse-error {
+  background: rgba(248,81,73,0.1);
+  border: 1px solid rgba(248,81,73,0.3);
+  color: var(--red);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* Preview table */
+.preview-section {
+  border: 1px solid rgba(45,212,191,0.3);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.preview-header {
+  background: rgba(45,212,191,0.08);
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(45,212,191,0.2);
+}
+.preview-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+}
+.preview-table-wrap { overflow-x: auto; max-height: 300px; overflow-y: auto; }
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.preview-table th {
+  padding: 7px 12px;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+.preview-table td { padding: 6px 12px; border-bottom: 1px solid var(--border-subtle); }
+.preview-table tr:last-child td { border-bottom: none; }
+.preview-inactive { opacity: 0.45; }
+.mono { font-family: var(--font-mono); }
+.bold { font-weight: 700; color: var(--teal); }
+
 .setting-static {
   font-family: var(--font-mono);
   font-size: 12px;
