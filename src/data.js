@@ -1,7 +1,8 @@
 export const SEED_WEEKS = [
   {
-    id: "2025-05-10",
+    id: "2025-W20",
     label: "Week of 5/10–5/16",
+    dateRange: "May 10–16, 2025",
     physicians: [
       { letter: "B", pts: 45, pthr: 2.65, esi1: 0, esi2: 11, esi3: 24, esi4: 11, esi5: 0 },
       { letter: "E", pts: 21, pthr: 2.63, esi1: 0, esi2: 7,  esi3: 14, esi4: 0,  esi5: 0 },
@@ -26,8 +27,9 @@ export const SEED_WEEKS = [
     ]
   },
   {
-    id: "2025-05-03",
+    id: "2025-W19",
     label: "Week of 5/3–5/9",
+    dateRange: "May 3–9, 2025",
     physicians: [
       { letter: "H", pts: 48, pthr: 2.53, esi1: 0, esi2: 9,  esi3: 36, esi4: 2,  esi5: 0 },
       { letter: "I", pts: 45, pthr: 2.50, esi1: 0, esi2: 10, esi3: 30, esi4: 5,  esi5: 0 },
@@ -53,9 +55,5 @@ export const SEED_WEEKS = [
   }
 ];
 
-// Default name mappings — admin can update these
-export const DEFAULT_NAMES = {
-  "H": "Casey"
-};
-
+export const DEFAULT_NAMES = { "H": "Casey" };
 export const ADMIN_PASSWORD = "ed2025";

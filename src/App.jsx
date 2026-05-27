@@ -8,27 +8,26 @@ import TrendView from './components/TrendView';
 import './App.css';
 
 export default function App() {
-  const [weeks, setWeeks]           = useLocalStorage('lb-weeks', SEED_WEEKS);
-  const [names, setNames]           = useLocalStorage('lb-names', DEFAULT_NAMES);
-  const [unblinded, setUnblinded]   = useLocalStorage('lb-unblinded', false);
+  const [weeks, setWeeks]             = useLocalStorage('lb-weeks', SEED_WEEKS);
+  const [names, setNames]             = useLocalStorage('lb-names', DEFAULT_NAMES);
+  const [unblinded, setUnblinded]     = useLocalStorage('lb-unblinded', false);
   const [currentUser, setCurrentUser] = useLocalStorage('lb-current-user', null);
   const [selectedWeekIdx, setSelectedWeekIdx] = useState(0);
-  const [view, setView]             = useState('leaderboard'); // 'leaderboard' | 'season' | 'trends' | 'admin'
-  const [isAdmin, setIsAdmin]       = useState(false);
+  const [view, setView]               = useState('leaderboard');
+  const [isAdmin, setIsAdmin]         = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [adminInput, setAdminInput] = useState('');
-  const [adminError, setAdminError] = useState('');
-  const [letterPickerInput, setLetterPickerInput] = useState('');
+  const [adminInput, setAdminInput]   = useState('');
+  const [adminError, setAdminError]   = useState('');
+  const [letterInput, setLetterInput] = useState('');
   const [letterError, setLetterError] = useState('');
 
   const selectedWeek = weeks[selectedWeekIdx] || weeks[0];
-
   const allLetters = [...new Set(
     weeks.flatMap(w => w.physicians.filter(p => p.pts > 0).map(p => p.letter))
   )].sort();
 
   function handleLetterSubmit() {
-    const val = letterPickerInput.trim().toUpperCase();
+    const val = letterInput.trim().toUpperCase();
     if (!val || val.length !== 1 || !/[A-Z]/.test(val)) {
       setLetterError('Please enter a single letter (A–Z)');
       return;
@@ -43,201 +42,154 @@ export default function App() {
       setAdminError('');
       setShowAdminLogin(false);
       setAdminInput('');
-      setView('admin');
     } else {
       setAdminError('Incorrect password');
     }
   }
 
+  function handleLogout() {
+    setIsAdmin(false);
+    setView('leaderboard');
+  }
+
   function handleAddWeek(newWeek) {
     setWeeks(prev => [newWeek, ...prev]);
+    setSelectedWeekIdx(0);
   }
 
   function handleUpdateNames(newNames) {
     setNames(newNames);
   }
 
-  // ── Letter picker (first visit) ──────────────────────────────────────────
+  // ── Letter picker ─────────────────────────────────────────────────────────
   if (!currentUser) {
     return (
-      <div className="app">
-        <div className="letter-picker-overlay">
-          <div className="letter-picker-card">
-            <div className="lp-header">
-              <div className="lp-logo">ED</div>
-              <h1>Physician Productivity</h1>
-              <p>Which letter were you assigned this week?</p>
-            </div>
-            <div className="lp-body">
-              <input
-                className="lp-input"
-                type="text"
-                maxLength={1}
-                placeholder="e.g. H"
-                value={letterPickerInput}
-                onChange={e => setLetterPickerInput(e.target.value.toUpperCase())}
-                onKeyDown={e => e.key === 'Enter' && handleLetterSubmit()}
-                autoFocus
-              />
-              {letterError && <p className="lp-error">{letterError}</p>}
-              <div className="lp-letters">
-                {allLetters.map(l => (
-                  <button
-                    key={l}
-                    className="lp-letter-btn"
-                    onClick={() => setCurrentUser(l)}
-                  >{l}</button>
-                ))}
-              </div>
-              <button className="lp-submit" onClick={handleLetterSubmit}>
-                Set My Letter
-              </button>
-              <button className="lp-skip" onClick={() => setCurrentUser('?')}>
-                I don't know my letter
-              </button>
-            </div>
+      <div className="onboard-overlay">
+        <div className="onboard-card">
+          <div className="onboard-icon">🏥</div>
+          <h1 className="onboard-title">ED Productivity</h1>
+          <p className="onboard-sub">Physician Performance Dashboard</p>
+          <div className="onboard-divider" />
+          <p className="onboard-prompt">Which letter were you assigned this week?</p>
+          <div className="onboard-letters">
+            {allLetters.map(l => (
+              <button key={l} className="letter-btn" onClick={() => setCurrentUser(l)}>{l}</button>
+            ))}
           </div>
+          <p className="onboard-or">or type it</p>
+          <div className="onboard-input-row">
+            <input
+              className="modal-input onboard-input"
+              type="text" maxLength={1} placeholder="H"
+              value={letterInput}
+              onChange={e => setLetterInput(e.target.value.toUpperCase())}
+              onKeyDown={e => e.key === 'Enter' && handleLetterSubmit()}
+              autoFocus
+            />
+            <button className="btn btn-primary" onClick={handleLetterSubmit}>Go</button>
+          </div>
+          {letterError && <p className="modal-error">{letterError}</p>}
+          <button className="onboard-skip" onClick={() => setCurrentUser('?')}>I don't know my letter</button>
         </div>
       </div>
     );
   }
 
-  // ── Main app ─────────────────────────────────────────────────────────────
+  // ── Main app ──────────────────────────────────────────────────────────────
   return (
     <div className="app">
       <header className="header">
         <div className="header-inner">
           <div className="header-left">
-            <span className="header-logo">ED</span>
-            <div>
-              <h1 className="header-title">Physician Productivity</h1>
-              <p className="header-sub">
-                {currentUser !== '?' && (
-                  <>You are <strong>Letter {currentUser}</strong> <button onClick={() => setCurrentUser(null)} title="Change your letter" style={{background:'none',border:'none',cursor:'pointer',fontSize:'14px',padding:'0 2px',verticalAlign:'middle',opacity:0.6}}>✏️</button> · </>
-                )}
-                Vituity / Trinity Health
-              </p>
+            <div className="logo">
+              <span className="logo-icon">🏥</span>
+              <div>
+                <div className="logo-title">ED Productivity</div>
+                <div className="logo-sub">Physician Performance Dashboard</div>
+              </div>
             </div>
+            <nav className="nav">
+              <button className={`nav-btn ${view === 'leaderboard' ? 'active' : ''}`} onClick={() => setView('leaderboard')}>
+                📊 Weekly
+              </button>
+              <button className={`nav-btn ${view === 'season' ? 'active' : ''}`} onClick={() => setView('season')}>
+                🏅 Season Avg
+              </button>
+              <button className={`nav-btn ${view === 'trends' ? 'active' : ''}`} onClick={() => setView('trends')}>
+                📈 Trends
+              </button>
+              {isAdmin ? (
+                <>
+                  <button className={`nav-btn ${view === 'admin' ? 'active' : ''}`} onClick={() => setView('admin')}>Admin</button>
+                  <button className="nav-btn admin-active" onClick={handleLogout}>Logout</button>
+                </>
+              ) : (
+                <button className="nav-btn" onClick={() => setShowAdminLogin(true)}>Admin</button>
+              )}
+            </nav>
           </div>
-
-          <div className="header-right">
+          <div className="toolbar-right">
+            <div className="user-badge">
+              You are <span className="letter-chip">{currentUser}</span>
+              <button className="change-letter" onClick={() => setCurrentUser(null)} title="Change letter">✏️</button>
+            </div>
             {isAdmin && (
-              <button
-                className={`btn-unblind ${unblinded ? 'active' : ''}`}
-                onClick={() => setUnblinded(!unblinded)}
-              >
+              <button className={`toggle-btn ${unblinded ? 'active' : ''}`} onClick={() => setUnblinded(!unblinded)}>
                 {unblinded ? '🔓 Unblinded' : '🔒 Blinded'}
               </button>
             )}
-            {!isAdmin && !showAdminLogin && (
-              <button className="btn-ghost" onClick={() => setShowAdminLogin(true)}>
-                Admin
-              </button>
-            )}
-            {showAdminLogin && !isAdmin && (
-              <div className="admin-inline-login">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={adminInput}
-                  onChange={e => setAdminInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleAdminLogin()}
-                  className="admin-pw-input"
-                  autoFocus
-                />
-                <button className="btn-primary-sm" onClick={handleAdminLogin}>Go</button>
-                <button className="btn-ghost-sm" onClick={() => { setShowAdminLogin(false); setAdminInput(''); setAdminError(''); }}>✕</button>
-                {adminError && <span className="admin-error">{adminError}</span>}
-              </div>
-            )}
           </div>
         </div>
-
-        {/* Nav tabs */}
-        <nav className="nav-tabs">
-          <button
-            className={`nav-tab ${view === 'leaderboard' ? 'active' : ''}`}
-            onClick={() => setView('leaderboard')}
-          >📊 Weekly</button>
-          <button
-            className={`nav-tab ${view === 'season' ? 'active' : ''}`}
-            onClick={() => setView('season')}
-          >🏅 Season Avg</button>
-          <button
-            className={`nav-tab ${view === 'trends' ? 'active' : ''}`}
-            onClick={() => setView('trends')}
-          >📈 Trends</button>
-          {isAdmin && (
-            <button
-              className={`nav-tab ${view === 'admin' ? 'active' : ''}`}
-              onClick={() => setView('admin')}
-            >⚙️ Admin</button>
-          )}
-        </nav>
       </header>
 
+      {showAdminLogin && !isAdmin && (
+        <div className="modal-overlay" onClick={() => setShowAdminLogin(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <h3 className="modal-title">Admin Access</h3>
+            <p className="modal-sub">Enter the admin password to continue.</p>
+            <input type="password" className="modal-input" placeholder="Password"
+              value={adminInput} onChange={e => setAdminInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleAdminLogin()} autoFocus />
+            {adminError && <p className="modal-error">{adminError}</p>}
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => { setShowAdminLogin(false); setAdminInput(''); setAdminError(''); }}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleAdminLogin}>Login</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="main">
-        {/* ── Weekly view ── */}
         {view === 'leaderboard' && (
           <>
-            <WeekSelector
-              weeks={weeks}
-              selectedIdx={selectedWeekIdx}
-              onSelect={setSelectedWeekIdx}
-            />
-            <Leaderboard
-              week={selectedWeek}
-              weeks={weeks}
-              names={names}
-              unblinded={unblinded && isAdmin}
-              currentUser={currentUser}
-              seasonMode={false}
-            />
-          </>
-        )}
-
-        {/* ── Season average view ── */}
-        {view === 'season' && (
-          <>
-            <div className="season-header">
-              <p className="season-desc">
-                Cumulative averages across all <strong>{weeks.length} weeks</strong> of data.
-                Only weeks with active shifts are counted per physician.
-                PACE score uses averaged ESI distribution.
-              </p>
+            <div className="toolbar">
+              <WeekSelector weeks={weeks} selectedIdx={selectedWeekIdx} onChange={setSelectedWeekIdx} />
+              {isAdmin && (
+                <div className="toolbar-right">
+                  <button className={`toggle-btn ${unblinded ? 'active' : ''}`} onClick={() => setUnblinded(!unblinded)}>
+                    {unblinded ? '🔓 Unblinded' : '🔒 Blinded'}
+                  </button>
+                </div>
+              )}
             </div>
-            <Leaderboard
-              week={null}
-              weeks={weeks}
-              names={names}
-              unblinded={unblinded && isAdmin}
-              currentUser={currentUser}
-              seasonMode={true}
-            />
+            <Leaderboard week={selectedWeek} weeks={weeks} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} seasonMode={false} />
           </>
         )}
 
-        {/* ── Trends view ── */}
-        {view === 'trends' && (
-          <TrendView
-            weeks={weeks}
-            names={names}
-            currentUser={currentUser}
-            unblinded={unblinded && isAdmin}
-          />
+        {view === 'season' && (
+          <Leaderboard week={null} weeks={weeks} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} seasonMode={true} />
         )}
 
-        {/* ── Admin view ── */}
+        {view === 'trends' && (
+          <TrendView weeks={weeks} names={names} currentUser={currentUser} unblinded={unblinded && isAdmin} />
+        )}
+
         {view === 'admin' && isAdmin && (
           <AdminPanel
-            weeks={weeks}
-            names={names}
-            onAddWeek={handleAddWeek}
-            onUpdateNames={handleUpdateNames}
-            unblinded={unblinded}
-            onToggleUnblinded={() => setUnblinded(!unblinded)}
-            currentUser={currentUser}
-            onSetCurrentUser={setCurrentUser}
+            weeks={weeks} names={names}
+            onAddWeek={handleAddWeek} onUpdateNames={handleUpdateNames}
+            unblinded={unblinded} onToggleUnblinded={() => setUnblinded(!unblinded)}
+            currentUser={currentUser} onSetCurrentUser={setCurrentUser}
           />
         )}
       </main>
