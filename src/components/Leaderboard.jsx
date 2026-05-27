@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import './Leaderboard.css';
+import './LeaderboardAdditions.css';
 
 const ESI_COLORS = ['#f85149', '#f97316', '#eab308', '#3fb950', '#58a6ff'];
 
