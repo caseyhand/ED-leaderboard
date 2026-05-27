@@ -143,6 +143,9 @@ export default function App() {
             <button className={`nav-btn ${view === 'leaderboard' ? 'active' : ''}`} onClick={() => setView('leaderboard')}>
               Leaderboard
             </button>
+            <button className={`nav-btn ${view === 'season' ? 'active' : ''}`} onClick={() => setView('season')}>
+              🏅 Season Avg
+            </button>
             <button className={`nav-btn ${view === 'trends' ? 'active' : ''}`} onClick={() => setView('trends')}>
               Trends
             </button>
@@ -211,6 +214,17 @@ export default function App() {
             </div>
             <Leaderboard week={selectedWeek} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} />
           </>
+        )}
+
+        {view === 'season' && (
+          <Leaderboard
+            week={null}
+            weeks={weeks}
+            names={names}
+            unblinded={unblinded && isAdmin}
+            currentUser={currentUser}
+            seasonMode={true}
+          />
         )}
 
         {view === 'trends' && (

@@ -118,14 +118,45 @@ function AcuityPip({ acuityIndex, groupAvg }) {
   );
 }
 
-export default function Leaderboard({ week, names, unblinded, currentUser }) {
+
+function buildSeasonAverages(weeks) {
+  const map = {};
+  weeks.forEach(week => {
+    week.physicians.forEach(p => {
+      if (p.pts === 0) return;
+      if (!map[p.letter]) map[p.letter] = { letter: p.letter, entries: [] };
+      map[p.letter].entries.push(p);
+    });
+  });
+  return Object.values(map).map(({ letter, entries }) => {
+    const n = entries.length;
+    const avg = f => entries.reduce((s, e) => s + e[f], 0) / n;
+    return {
+      letter, weeksActive: n,
+      pts:  Math.round(avg('pts') * 10) / 10,
+      pthr: Math.round(avg('pthr') * 100) / 100,
+      esi1: Math.round(avg('esi1') * 10) / 10,
+      esi2: Math.round(avg('esi2') * 10) / 10,
+      esi3: Math.round(avg('esi3') * 10) / 10,
+      esi4: Math.round(avg('esi4') * 10) / 10,
+      esi5: Math.round(avg('esi5') * 10) / 10,
+    };
+  });
+}
+
+export default function Leaderboard({ week, weeks, names, unblinded, currentUser, seasonMode }) {
   const [sortMode, setSortMode] = useState('pthr'); // 'pthr' | 'pace'
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+  const physicians = useMemo(() => {
+    if (seasonMode && weeks) return buildSeasonAverages(weeks);
+    return week ? week.physicians : [];
+  }, [week, weeks, seasonMode]);
+
   const { active, inactive } = useMemo(() => {
-    if (!week) return { active: [], inactive: [] };
-    const active = week.physicians.filter(p => p.pts > 0);
-    const inactive = week.physicians
+    if (!physicians.length) return { active: [], inactive: [] };
+    const active = physicians.filter(p => p.pts > 0);
+    const inactive = physicians
       .filter(p => p.pts === 0)
       .sort((a, b) => a.letter.localeCompare(b.letter));
     return { active, inactive };
