@@ -1,5 +1,32 @@
 export const SEED_WEEKS = [
   {
+    id: "2025-W21",
+    label: "Week of 5/17–5/23",
+    dateRange: "May 17–23, 2025",
+    physicians: [
+      { letter: "J", pts: 87,  pthr: 2.64, esi1: 0, esi2: 17, esi3: 60, esi4: 10, esi5: 0 },
+      { letter: "C", pts: 68,  pthr: 2.52, esi1: 0, esi2: 19, esi3: 46, esi4: 3,  esi5: 0 },
+      { letter: "B", pts: 41,  pthr: 2.41, esi1: 0, esi2: 5,  esi3: 26, esi4: 9,  esi5: 1 },
+      { letter: "G", pts: 82,  pthr: 2.10, esi1: 0, esi2: 27, esi3: 48, esi4: 5,  esi5: 0 },
+      { letter: "L", pts: 16,  pthr: 2.00, esi1: 0, esi2: 1,  esi3: 13, esi4: 2,  esi5: 0 },
+      { letter: "E", pts: 67,  pthr: 1.97, esi1: 0, esi2: 13, esi3: 45, esi4: 9,  esi5: 0 },
+      { letter: "Q", pts: 17,  pthr: 1.89, esi1: 0, esi2: 3,  esi3: 12, esi4: 2,  esi5: 0 },
+      { letter: "H", pts: 42,  pthr: 1.68, esi1: 0, esi2: 9,  esi3: 28, esi4: 5,  esi5: 0 },
+      { letter: "F", pts: 45,  pthr: 1.67, esi1: 0, esi2: 12, esi3: 26, esi4: 7,  esi5: 0 },
+      { letter: "D", pts: 46,  pthr: 1.64, esi1: 0, esi2: 18, esi3: 28, esi4: 0,  esi5: 0 },
+      { letter: "R", pts: 55,  pthr: 1.62, esi1: 0, esi2: 17, esi3: 36, esi4: 2,  esi5: 0 },
+      { letter: "M", pts: 44,  pthr: 1.57, esi1: 0, esi2: 15, esi3: 18, esi4: 11, esi5: 0 },
+      { letter: "K", pts: 35,  pthr: 1.46, esi1: 0, esi2: 5,  esi3: 18, esi4: 12, esi5: 0 },
+      { letter: "N", pts: 8,   pthr: 1.14, esi1: 0, esi2: 3,  esi3: 4,  esi4: 1,  esi5: 0 },
+      { letter: "I", pts: 0,   pthr: null, esi1: 0, esi2: 0,  esi3: 0,  esi4: 0,  esi5: 0 },
+      { letter: "S", pts: 0,   pthr: null, esi1: 0, esi2: 0,  esi3: 0,  esi4: 0,  esi5: 0 },
+      { letter: "O", pts: 0,   pthr: null, esi1: 0, esi2: 0,  esi3: 0,  esi4: 0,  esi5: 0 },
+      { letter: "T", pts: 0,   pthr: null, esi1: 0, esi2: 0,  esi3: 0,  esi4: 0,  esi5: 0 },
+      { letter: "A", pts: 0,   pthr: null, esi1: 0, esi2: 0,  esi3: 0,  esi4: 0,  esi5: 0 },
+      { letter: "P", pts: 0,   pthr: null, esi1: 0, esi2: 0,  esi3: 0,  esi4: 0,  esi5: 0 },
+    ]
+  },
+  {
     id: "2025-W20",
     label: "Week of 5/10–5/16",
     dateRange: "May 10–16, 2025",
