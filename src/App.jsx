@@ -89,4 +89,180 @@ export default function App() {
               Enter it below to highlight your row on the leaderboard.
             </p>
 
-            <di
+            <div className="onboard-letters">
+              {allLetters.map(l => (
+                <button
+                  key={l}
+                  className={`letter-btn ${letterPickerInput === l ? 'selected' : ''}`}
+                  onClick={() => setLetterPickerInput(l)}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+
+            <p className="onboard-or">or type it in</p>
+
+            <div className="onboard-input-row">
+              <input
+                className="modal-input onboard-input"
+                placeholder="Your letter (e.g. H)"
+                maxLength={1}
+                value={letterPickerInput}
+                onChange={e => {
+                  setLetterPickerInput(e.target.value.toUpperCase());
+                  setLetterError('');
+                }}
+                onKeyDown={e => e.key === 'Enter' && handleLetterSubmit()}
+                autoFocus
+              />
+              <button className="btn btn-primary" onClick={handleLetterSubmit}>
+                Let's go →
+              </button>
+            </div>
+
+            {letterError && <p className="modal-error" style={{textAlign:'center'}}>{letterError}</p>}
+
+            <button
+              className="onboard-skip"
+              onClick={() => setCurrentUser('?')}
+            >
+              I don't know my letter — just show me the board
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      {/* Header */}
+      <header className="header">
+        <div className="header-inner">
+          <div className="header-left">
+            <div className="logo">
+              <span className="logo-icon">⚕</span>
+              <div>
+                <div className="logo-title">ED Productivity</div>
+                <div className="logo-sub">Physician Performance Dashboard</div>
+              </div>
+            </div>
+          </div>
+
+          <nav className="nav">
+            <button className={`nav-btn ${view === 'leaderboard' ? 'active' : ''}`} onClick={() => setView('leaderboard')}>
+              Leaderboard
+            </button>
+            <button className={`nav-btn ${view === 'season' ? 'active' : ''}`} onClick={() => setView('season')}>
+              🏅 Season Avg
+            </button>
+            <button className={`nav-btn ${view === 'trends' ? 'active' : ''}`} onClick={() => setView('trends')}>
+              Trends
+            </button>
+            {isAdmin ? (
+              <>
+                <button className={`nav-btn ${view === 'admin' ? 'active' : ''}`} onClick={() => setView('admin')}>
+                  Admin
+                </button>
+                <button className="nav-btn admin-active" onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <button className="nav-btn" onClick={() => setShowAdminLogin(true)}>Admin</button>
+            )}
+          </nav>
+        </div>
+      </header>
+
+      {/* Admin login modal */}
+      {showAdminLogin && (
+        <div className="modal-overlay" onClick={() => setShowAdminLogin(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <h3 className="modal-title">Admin Access</h3>
+            <p className="modal-sub">Enter the admin password to continue.</p>
+            <input
+              type="password"
+              className="modal-input"
+              placeholder="Password"
+              value={adminInput}
+              onChange={e => setAdminInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleAdminLogin()}
+              autoFocus
+            />
+            {adminError && <p className="modal-error">{adminError}</p>}
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => { setShowAdminLogin(false); setAdminInput(''); setAdminError(''); }}>
+                Cancel
+              </button>
+              <button className="btn btn-primary" onClick={handleAdminLogin}>Login</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main content */}
+      <main className="main">
+        {view === 'leaderboard' && (
+          <>
+            <div className="toolbar">
+              <WeekSelector weeks={weeks} selectedIdx={selectedWeekIdx} onChange={setSelectedWeekIdx} />
+              <div className="toolbar-right">
+                {currentUser !== '?' && (
+                  <div className="user-badge">
+                    You are <span className="letter-chip">{currentUser}</span>
+                    <button className="change-letter" onClick={() => setCurrentUser(null)} title="Change letter">✎</button>
+                  </div>
+                )}
+                {isAdmin && (
+                  <button
+                    className={`toggle-btn ${unblinded ? 'active' : ''}`}
+                    onClick={() => setUnblinded(!unblinded)}
+                  >
+                    {unblinded ? '🔓 Unblinded' : '🔒 Blinded'}
+                  </button>
+                )}
+              </div>
+            </div>
+            <Leaderboard week={selectedWeek} weeks={weeks} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} />
+          </>
+        )}
+
+        {view === 'season' && (
+          <Leaderboard
+            week={null}
+            weeks={weeks}
+            names={names}
+            unblinded={unblinded && isAdmin}
+            currentUser={currentUser}
+            seasonMode={true}
+          />
+        )}
+
+        {view === 'trends' && (
+          <TrendView weeks={weeks} names={names} currentUser={currentUser} unblinded={unblinded && isAdmin} />
+        )}
+
+        {view === 'admin' && isAdmin && (
+          <AdminPanel
+            weeks={weeks}
+            names={names}
+            onAddWeek={handleAddWeek}
+            onUpdateNames={setNames}
+            unblinded={unblinded}
+            onToggleUnblinded={() => setUnblinded(!unblinded)}
+            currentUser={currentUser}
+            onSetCurrentUser={setCurrentUser}
+          />
+        )}
+      </main>
+
+      <footer className="footer">
+        <span>ED Physician Productivity Dashboard</span>
+        <span className="footer-sep">·</span>
+        <span>Data is blinded by default</span>
+        <span className="footer-sep">·</span>
+        <span>Vituity / Trinity Health</span>
+      </footer>
+    </div>
+  );
+}
