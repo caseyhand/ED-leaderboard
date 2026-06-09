@@ -18,7 +18,7 @@ export const SEED_WEEKS = [
       { letter: "N", pts: 18,  pthr: 2.00, esi1: 0, esi2: 4,  esi3: 14, esi4: 0,  esi5: 0 },
       { letter: "E", pts: 29,  pthr: 1.81, esi1: 0, esi2: 9,  esi3: 17, esi4: 3,  esi5: 0 },
       { letter: "O", pts: 43,  pthr: 1.79, esi1: 0, esi2: 8,  esi3: 29, esi4: 5,  esi5: 1 },
-      { letter: "F", pts: 30,  pthr: 1.67, esi1: 0, esi2: 12, esi3: 15, esi4: 3,  esi5: 0 },
+      { letter: "F", pts: 32,  pthr: 1.67, esi1: 0, esi2: 13, esi3: 16, esi4: 3,  esi5: 0 },
       { letter: "P", pts: 15,  pthr: 1.67, esi1: 0, esi2: 5,  esi3: 9,  esi4: 1,  esi5: 0 },
       { letter: "G", pts: 31,  pthr: 1.55, esi1: 0, esi2: 7,  esi3: 23, esi4: 1,  esi5: 0 },
       { letter: "T", pts: 12,  pthr: 1.50, esi1: 0, esi2: 2,  esi3: 6,  esi4: 4,  esi5: 0 },
