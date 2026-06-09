@@ -3,6 +3,11 @@ export const SEED_WEEKS = [
     id: "2025-W21",
     label: "Week of 5/17–5/23",
     dateRange: "May 17–23, 2025",
+    hoursWorked: {
+      J: 33, C: 27, B: 17, G: 39, L: 8,  E: 34, Q: 9,
+      H: 25, F: 27, D: 28, R: 34, M: 28, K: 24, N: 7,
+      I: 0,  S: 0,  O: 0,  T: 0,  A: 0,  P: 0
+    },
     physicians: [
       { letter: "J", pts: 87,  pthr: 2.64, esi1: 0, esi2: 17, esi3: 60, esi4: 10, esi5: 0 },
       { letter: "C", pts: 68,  pthr: 2.52, esi1: 0, esi2: 19, esi3: 46, esi4: 3,  esi5: 0 },
@@ -30,6 +35,11 @@ export const SEED_WEEKS = [
     id: "2025-W20",
     label: "Week of 5/10–5/16",
     dateRange: "May 10–16, 2025",
+    hoursWorked: {
+      B: 17, E: 8,  J: 17, N: 27, C: 36, L: 25, R: 9,
+      G: 25, K: 24, A: 11, P: 9,  M: 38, H: 24, Q: 9,
+      F: 18, D: 27, O: 17, I: 0,  S: 0,  T: 0
+    },
     physicians: [
       { letter: "B", pts: 45, pthr: 2.65, esi1: 0, esi2: 11, esi3: 24, esi4: 11, esi5: 0 },
       { letter: "E", pts: 21, pthr: 2.63, esi1: 0, esi2: 7,  esi3: 14, esi4: 0,  esi5: 0 },
@@ -57,6 +67,11 @@ export const SEED_WEEKS = [
     id: "2025-W19",
     label: "Week of 5/3–5/9",
     dateRange: "May 3–9, 2025",
+    hoursWorked: {
+      Q: 8,  L: 16, I: 18, D: 27, C: 27, B: 28, O: 16,
+      J: 18, G: 24, K: 17, F: 25, M: 16, E: 26, A: 31,
+      P: 8,  H: 19, N: 16, R: 0,  S: 0,  T: 0
+    },
     physicians: [
       { letter: "H", pts: 48, pthr: 2.53, esi1: 0, esi2: 9,  esi3: 36, esi4: 2,  esi5: 0 },
       { letter: "I", pts: 45, pthr: 2.50, esi1: 0, esi2: 10, esi3: 30, esi4: 5,  esi5: 0 },
