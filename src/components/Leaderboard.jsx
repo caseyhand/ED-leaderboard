@@ -4,10 +4,17 @@ import './Leaderboard.css';
 const ESI_COLORS = ['#f85149', '#f97316', '#eab308', '#3fb950', '#58a6ff'];
 const ESI_LABELS = ['ESI 1', 'ESI 2', 'ESI 3', 'ESI 4', 'ESI 5'];
 
-// Default ESI time weights — admin-tunable in future
 const DEFAULT_WEIGHTS = { esi1: 4.0, esi2: 2.5, esi3: 1.5, esi4: 0.8, esi5: 0.5 };
 
-function calcMetrics(physicians, weights = DEFAULT_WEIGHTS) {
+// PACE v2: compute total pts / total hours for a week (census intensity)
+function computeWeekIntensity(week) {
+  if (!week?.hoursWorked) return null;
+  const totalPts = week.physicians.reduce((s, p) => s + p.pts, 0);
+  const totalHours = Object.values(week.hoursWorked).reduce((s, h) => s + h, 0);
+  return totalHours > 0 ? totalPts / totalHours : null;
+}
+
+function calcMetrics(physicians, weights = DEFAULT_WEIGHTS, censusFactor = 1.0) {
   const active = physicians.filter(p => p.pts > 0);
   if (active.length === 0) return {};
 
@@ -20,25 +27,64 @@ function calcMetrics(physicians, weights = DEFAULT_WEIGHTS) {
     return { ...p, cwp, acuityIndex };
   });
 
-  // Step 2: Group averages
-  const groupAvgPthr = withCWP.reduce((s, p) => s + p.pthr, 0) / withCWP.length;
-  const groupAvgAcuity = withCWP.reduce((s, p) => s + p.acuityIndex, 0) / withCWP.length;
+  // Step 2: Weighted group averages (total pts / total hrs, total CWP / total pts)
+  const totalPts = withCWP.reduce((s, p) => s + p.pts, 0);
+  const totalCWP = withCWP.reduce((s, p) => s + p.cwp, 0);
+  const totalPthr = withCWP.reduce((s, p) => s + p.pthr, 0);
+  const groupAvgPthr = totalPts > 0 ? totalPthr / withCWP.length : 0; // simple avg of pthr (already hours-weighted per physician)
+  const groupAvgAcuity = totalPts > 0 ? totalCWP / totalPts : 0; // weighted: total CWP / total pts
 
-  // Step 3: Expected Pt/hr and PACE per physician
+  // Step 3: Expected Pt/hr — acuity-adjusted then census-adjusted (PACE v2)
   const withPACE = withCWP.map(p => {
-    // Expected pt/hr adjusts group average by how much harder/easier this physician's patients were
-    const expectedPthr = groupAvgAcuity > 0
+    const acuityAdjusted = groupAvgAcuity > 0
       ? groupAvgPthr * (p.acuityIndex / groupAvgAcuity)
       : groupAvgPthr;
+    // Census factor: lowers expectation on slow-volume weeks, raises on busy ones
+    const expectedPthr = acuityAdjusted * censusFactor;
     const pace = expectedPthr > 0 ? p.pthr / expectedPthr : 1.0;
     const delta = p.pthr - expectedPthr;
     return { ...p, expectedPthr, pace, delta };
   });
 
-  // Build lookup by letter
   const lookup = {};
   withPACE.forEach(p => { lookup[p.letter] = p; });
   return { lookup, groupAvgPthr, groupAvgAcuity };
+}
+
+// PACE v2: weighted season averages — total pts / total hours per physician
+function buildSeasonAverages(weeks) {
+  const map = {};
+  weeks.forEach(week => {
+    week.physicians.forEach(p => {
+      if (p.pts === 0) return;
+      if (!map[p.letter]) map[p.letter] = { letter: p.letter, entries: [], totalPts: 0, totalHours: 0 };
+      map[p.letter].entries.push(p);
+      map[p.letter].totalPts += p.pts;
+      // Pull hours from hoursWorked map if available
+      const hrs = week.hoursWorked?.[p.letter] ?? null;
+      if (hrs != null) map[p.letter].totalHours += hrs;
+    });
+  });
+
+  return Object.values(map).map(({ letter, entries, totalPts, totalHours }) => {
+    const n = entries.length;
+    const avgField = f => entries.reduce((s, e) => s + e[f], 0) / n;
+    // Weighted Pt/hr: total patients / total hours (falls back to simple avg if no hours data)
+    const pthr = totalHours > 0
+      ? Math.round((totalPts / totalHours) * 100) / 100
+      : Math.round(avgField('pthr') * 100) / 100;
+    return {
+      letter,
+      weeksActive: n,
+      pts:  Math.round(avgField('pts') * 10) / 10,
+      pthr,
+      esi1: Math.round(avgField('esi1') * 10) / 10,
+      esi2: Math.round(avgField('esi2') * 10) / 10,
+      esi3: Math.round(avgField('esi3') * 10) / 10,
+      esi4: Math.round(avgField('esi4') * 10) / 10,
+      esi5: Math.round(avgField('esi5') * 10) / 10,
+    };
+  });
 }
 
 function EsiBar({ physician }) {
@@ -81,9 +127,7 @@ function PthrBar({ value, max }) {
 }
 
 function PaceBadge({ pace, delta }) {
-  const pct = ((pace - 1) * 100);
-  const isPositive = pct >= 0;
-  const absStr = Math.abs(pct).toFixed(0);
+  const isPositive = delta >= 0;
   const deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(2);
 
   let cls = 'pace-badge neutral';
@@ -118,34 +162,8 @@ function AcuityPip({ acuityIndex, groupAvg }) {
   );
 }
 
-
-function buildSeasonAverages(weeks) {
-  const map = {};
-  weeks.forEach(week => {
-    week.physicians.forEach(p => {
-      if (p.pts === 0) return;
-      if (!map[p.letter]) map[p.letter] = { letter: p.letter, entries: [] };
-      map[p.letter].entries.push(p);
-    });
-  });
-  return Object.values(map).map(({ letter, entries }) => {
-    const n = entries.length;
-    const avg = f => entries.reduce((s, e) => s + e[f], 0) / n;
-    return {
-      letter, weeksActive: n,
-      pts:  Math.round(avg('pts') * 10) / 10,
-      pthr: Math.round(avg('pthr') * 100) / 100,
-      esi1: Math.round(avg('esi1') * 10) / 10,
-      esi2: Math.round(avg('esi2') * 10) / 10,
-      esi3: Math.round(avg('esi3') * 10) / 10,
-      esi4: Math.round(avg('esi4') * 10) / 10,
-      esi5: Math.round(avg('esi5') * 10) / 10,
-    };
-  });
-}
-
 export default function Leaderboard({ week, weeks, names, unblinded, currentUser, seasonMode }) {
-  const [sortMode, setSortMode] = useState('pthr'); // 'pthr' | 'pace'
+  const [sortMode, setSortMode] = useState('pthr');
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const physicians = useMemo(() => {
@@ -160,11 +178,26 @@ export default function Leaderboard({ week, weeks, names, unblinded, currentUser
       .filter(p => p.pts === 0)
       .sort((a, b) => a.letter.localeCompare(b.letter));
     return { active, inactive };
-  }, [week]);
+  }, [physicians]);
+
+  // PACE v2: compute census factor from this week vs season average intensity
+  const censusFactor = useMemo(() => {
+    if (!week?.hoursWorked || !weeks?.length) return 1.0;
+    const intensities = weeks
+      .map(w => computeWeekIntensity(w))
+      .filter(v => v != null);
+    if (intensities.length === 0) return 1.0;
+    const seasonAvgIntensity = intensities.reduce((s, v) => s + v, 0) / intensities.length;
+    const thisWeekIntensity = computeWeekIntensity(week);
+    if (thisWeekIntensity == null || seasonAvgIntensity === 0) return 1.0;
+    return thisWeekIntensity / seasonAvgIntensity;
+  }, [week, weeks]);
 
   const { lookup, groupAvgPthr, groupAvgAcuity } = useMemo(
-    () => active.length > 0 ? calcMetrics(active) : { lookup: {}, groupAvgPthr: 0, groupAvgAcuity: 0 },
-    [active]
+    () => active.length > 0
+      ? calcMetrics(active, DEFAULT_WEIGHTS, censusFactor)
+      : { lookup: {}, groupAvgPthr: 0, groupAvgAcuity: 0 },
+    [active, censusFactor]
   );
 
   const sorted = useMemo(() => {
@@ -176,7 +209,6 @@ export default function Leaderboard({ week, weeks, names, unblinded, currentUser
   }, [active, lookup, sortMode]);
 
   const maxPthr = sorted.length > 0 ? sorted.reduce((m, p) => Math.max(m, p.pthr), 0) : 0;
-  const maxAapr = sorted.length > 0 ? sorted.reduce((m, p) => Math.max(m, p.pace || 0), 0) : 0;
 
   if (!week && !seasonMode) return <div className="lb-empty">No data available.</div>;
 
@@ -186,11 +218,8 @@ export default function Leaderboard({ week, weeks, names, unblinded, currentUser
   }
 
   const groupTotal = active.reduce((s, p) => s + p.pts, 0);
-
-  // Top by each metric
-  const topRaw = sorted.length > 0 ? [...sorted].sort((a,b) => b.pthr - a.pthr)[0] : null;
-  const topAapr = sorted.length > 0 ? [...sorted].sort((a,b) => (b.pace||0) - (a.pace||0))[0] : null;
-
+  const topRaw = sorted.length > 0 ? [...sorted].sort((a, b) => b.pthr - a.pthr)[0] : null;
+  const topPace = sorted.length > 0 ? [...sorted].sort((a, b) => (b.pace || 0) - (a.pace || 0))[0] : null;
   const colSpan = showAdvanced ? 13 : 10;
 
   return (
@@ -217,18 +246,19 @@ export default function Leaderboard({ week, weeks, names, unblinded, currentUser
         </div>
       </div>
 
-      {/* PACE explainer card — shown when advanced mode on */}
+      {/* PACE v2 explainer */}
       {showAdvanced && (
         <div className="pace-explainer">
           <div className="explainer-inner">
             <div className="explainer-icon">⚾</div>
             <div>
-              <div className="explainer-title">Acuity-Adjusted Performance Rating (PACE)</div>
+              <div className="explainer-title">Acuity-Adjusted Performance Rating (PACE v2)</div>
               <div className="explainer-body">
-                Like WAR in baseball — adjusts raw Pt/hr for the complexity of your case mix.
-                A PACE of <strong>1.10</strong> means you're seeing 10% more patients than expected
-                given your acuity. Weights: ESI 1 = 4.0×, ESI 2 = 2.5×, ESI 3 = 1.5×, ESI 4 = 0.8×, ESI 5 = 0.5×.
+                Like WAR in baseball — adjusts raw Pt/hr for <strong>case-mix complexity</strong> and <strong>weekly census volume</strong>.
+                A PACE of <strong>1.10</strong> means you're performing 10% above expectation given your acuity and the department's pace that week.
+                Weights: ESI 1 = 4.0×, ESI 2 = 2.5×, ESI 3 = 1.5×, ESI 4 = 0.8×, ESI 5 = 0.5×.
                 Group avg acuity index: <strong>{groupAvgAcuity.toFixed(2)}</strong>.
+                {!seasonMode && <span> Census factor this week: <strong>{censusFactor.toFixed(3)}</strong>.</span>}
               </div>
             </div>
           </div>
@@ -351,14 +381,14 @@ export default function Leaderboard({ week, weeks, names, unblinded, currentUser
         </table>
       </div>
 
-      {/* PACE leaderboard when in advanced mode */}
-      {showAdvanced && topAapr && (
+      {/* Top PACE performers */}
+      {showAdvanced && topPace && (
         <div className="pace-leaders">
           <div className="pace-leader-title">⚾ Top PACE Performers This Week</div>
           <div className="pace-leader-list">
-            {[...sorted].sort((a,b) => (b.pace||0) - (a.pace||0)).slice(0, 5).map((p, i) => (
+            {[...sorted].sort((a, b) => (b.pace || 0) - (a.pace || 0)).slice(0, 5).map((p, i) => (
               <div key={p.letter} className={`pace-leader-row ${p.letter === currentUser ? 'is-me' : ''}`}>
-                <span className="pace-leader-rank">#{i+1}</span>
+                <span className="pace-leader-rank">#{i + 1}</span>
                 <span className="pace-leader-letter">{displayName(p)}</span>
                 <span className="pace-leader-score">{p.pace?.toFixed(2)}</span>
                 <span className={`pace-leader-delta ${p.delta >= 0 ? 'pos' : 'neg'}`}>
