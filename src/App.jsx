@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 
 const DATA_VERSION = 7; // bump every time new week data is pushed
@@ -14,11 +14,14 @@ import WeekSelector from './components/WeekSelector';
 import TrendView from './components/TrendView';
 import './App.css';
 
+const DATA_VERSION = 5; // bump this every time you add a new week
+
 export default function App() {
   const [weeks, setWeeks] = useLocalStorage('lb-weeks', SEED_WEEKS);
   const [names, setNames] = useLocalStorage('lb-names', DEFAULT_NAMES);
   const [unblinded, setUnblinded] = useLocalStorage('lb-unblinded', false);
   const [currentUser, setCurrentUser] = useLocalStorage('lb-current-user', null);
+  const [dataVersion, setDataVersion] = useLocalStorage('lb-data-version', 0);
   const [selectedWeekIdx, setSelectedWeekIdx] = useState(0);
   const [view, setView] = useState('leaderboard');
   const [isAdmin, setIsAdmin] = useState(false);
@@ -27,6 +30,14 @@ export default function App() {
   const [adminInput, setAdminInput] = useState('');
   const [letterPickerInput, setLetterPickerInput] = useState('');
   const [letterError, setLetterError] = useState('');
+
+  // Sync seed data when version bumps
+  useEffect(() => {
+    if (dataVersion < DATA_VERSION) {
+      setWeeks(SEED_WEEKS);
+      setDataVersion(DATA_VERSION);
+    }
+  }, [dataVersion]);
 
   const selectedWeek = weeks[selectedWeekIdx] || weeks[0];
 
@@ -219,7 +230,7 @@ export default function App() {
                 )}
               </div>
             </div>
-            <Leaderboard week={selectedWeek} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} />
+            <Leaderboard week={selectedWeek} weeks={weeks} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} />
           </>
         )}
 
