@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useLocalStorage } from './useLocalStorage';
-
-const DATA_VERSION = 7; // bump every time new week data is pushed
-if (typeof window !== 'undefined' &&
-    localStorage.getItem('lb-data-version') !== String(DATA_VERSION)) {
-  localStorage.removeItem('lb-weeks');
-  localStorage.setItem('lb-data-version', String(DATA_VERSION));
-}
 import { SEED_WEEKS, DEFAULT_NAMES, ADMIN_PASSWORD } from './data';
 import Leaderboard from './components/Leaderboard';
 import AdminPanel from './components/AdminPanel';
@@ -14,7 +7,7 @@ import WeekSelector from './components/WeekSelector';
 import TrendView from './components/TrendView';
 import './App.css';
 
-const DATA_VERSION = 5; // bump this every time you add a new week
+const DATA_VERSION = 8; // bump this every time you add a new week
 
 export default function App() {
   const [weeks, setWeeks] = useLocalStorage('lb-weeks', SEED_WEEKS);
