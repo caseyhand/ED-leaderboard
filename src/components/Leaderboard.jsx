@@ -36,8 +36,8 @@ function calcMetrics(physicians, weights = DEFAULT_WEIGHTS, censusFactor = 1.0) 
 
   // Step 3: Expected Pt/hr — acuity-adjusted then census-adjusted (PACE v2)
   const withPACE = withCWP.map(p => {
-    const acuityAdjusted = groupAvgAcuity > 0
-      ? groupAvgPthr * (p.acuityIndex / groupAvgAcuity)
+    const acuityAdjusted = p.acuityIndex > 0
+      ? groupAvgPthr * (groupAvgAcuity / p.acuityIndex)
       : groupAvgPthr;
     // Census factor: lowers expectation on slow-volume weeks, raises on busy ones
     const expectedPthr = acuityAdjusted * censusFactor;
