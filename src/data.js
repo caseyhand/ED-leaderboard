@@ -1,5 +1,33 @@
 export const SEED_WEEKS = [
   {
+    id: "2025-W23",
+    label: "Week of 5/31–6/6",
+    dateRange: "May 31–Jun 6, 2025",
+    hoursWorked: { J: 31, C: 27, B: 24, N: 26, G: 27, E: 16, M: 41, L: 31, O: 25, H: 19, R: 18, P: 9, D: 29, F: 18, A: 0, I: 0, K: 0, Q: 0, S: 0, T: 0 },
+    physicians: [
+      { letter: "J", pts: 86, pthr: 2.77, esi1: 2, esi2: 17, esi3: 54, esi4: 13, esi5: 0 },
+      { letter: "C", pts: 66, pthr: 2.44, esi1: 0, esi2: 15, esi3: 50, esi4: 1, esi5: 0 },
+      { letter: "B", pts: 56, pthr: 2.33, esi1: 0, esi2: 8, esi3: 35, esi4: 12, esi5: 1 },
+      { letter: "N", pts: 53, pthr: 2.04, esi1: 0, esi2: 7, esi3: 29, esi4: 17, esi5: 0 },
+      { letter: "G", pts: 52, pthr: 1.93, esi1: 2, esi2: 14, esi3: 33, esi4: 3, esi5: 0 },
+      { letter: "E", pts: 30, pthr: 1.88, esi1: 0, esi2: 4, esi3: 14, esi4: 11, esi5: 1 },
+      { letter: "M", pts: 76, pthr: 1.85, esi1: 1, esi2: 18, esi3: 50, esi4: 7, esi5: 0 },
+      { letter: "L", pts: 57, pthr: 1.84, esi1: 0, esi2: 9, esi3: 42, esi4: 6, esi5: 0 },
+      { letter: "O", pts: 46, pthr: 1.84, esi1: 0, esi2: 8, esi3: 34, esi4: 4, esi5: 0 },
+      { letter: "H", pts: 35, pthr: 1.84, esi1: 0, esi2: 3, esi3: 11, esi4: 20, esi5: 1 },
+      { letter: "R", pts: 33, pthr: 1.83, esi1: 1, esi2: 6, esi3: 23, esi4: 3, esi5: 0 },
+      { letter: "P", pts: 16, pthr: 1.78, esi1: 0, esi2: 2, esi3: 13, esi4: 0, esi5: 0 },
+      { letter: "D", pts: 45, pthr: 1.55, esi1: 1, esi2: 10, esi3: 31, esi4: 3, esi5: 0 },
+      { letter: "F", pts: 24, pthr: 1.33, esi1: 0, esi2: 4, esi3: 18, esi4: 1, esi5: 0 },
+      { letter: "A", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "I", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "K", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "Q", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "S", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "T", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+  {
     id: "2025-W20",
     label: "Week of 5/10–5/16",
     dateRange: "May 10–16, 2025",
