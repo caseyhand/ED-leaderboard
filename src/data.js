@@ -1,8 +1,62 @@
 export const SEED_WEEKS = [
   {
-    id: "2025-W23",
+    id: "2026-W25",
+    label: "Week of 6/14–6/20",
+    dateRange: "Jun 14–20, 2026",
+    hoursWorked: { L: 8, B: 24, E: 24, H: 27, I: 16, J: 26, P: 9, K: 16, G: 29, C: 36, O: 8, F: 25, Q: 9, M: 34, R: 14, D: 27, N: 9, A: 0, T: 0 },
+    physicians: [
+      { letter: "L", pts: 23, pthr: 2.88, esi1: 0, esi2: 4, esi3: 15, esi4: 3, esi5: 1 },
+      { letter: "B", pts: 58, pthr: 2.42, esi1: 0, esi2: 8, esi3: 39, esi4: 11, esi5: 0 },
+      { letter: "E", pts: 58, pthr: 2.42, esi1: 0, esi2: 16, esi3: 34, esi4: 8, esi5: 0 },
+      { letter: "H", pts: 64, pthr: 2.37, esi1: 0, esi2: 12, esi3: 43, esi4: 9, esi5: 0 },
+      { letter: "I", pts: 37, pthr: 2.31, esi1: 0, esi2: 8, esi3: 27, esi4: 2, esi5: 0 },
+      { letter: "J", pts: 59, pthr: 2.27, esi1: 1, esi2: 10, esi3: 36, esi4: 12, esi5: 0 },
+      { letter: "P", pts: 20, pthr: 2.22, esi1: 0, esi2: 3, esi3: 15, esi4: 2, esi5: 0 },
+      { letter: "K", pts: 35, pthr: 2.19, esi1: 1, esi2: 3, esi3: 19, esi4: 12, esi5: 0 },
+      { letter: "G", pts: 62, pthr: 2.14, esi1: 0, esi2: 9, esi3: 38, esi4: 14, esi5: 1 },
+      { letter: "C", pts: 76, pthr: 2.11, esi1: 0, esi2: 18, esi3: 58, esi4: 0, esi5: 0 },
+      { letter: "O", pts: 16, pthr: 2.00, esi1: 0, esi2: 3, esi3: 12, esi4: 1, esi5: 0 },
+      { letter: "F", pts: 45, pthr: 1.80, esi1: 0, esi2: 13, esi3: 30, esi4: 2, esi5: 0 },
+      { letter: "Q", pts: 16, pthr: 1.78, esi1: 0, esi2: 5, esi3: 10, esi4: 0, esi5: 1 },
+      { letter: "M", pts: 60, pthr: 1.76, esi1: 1, esi2: 14, esi3: 34, esi4: 11, esi5: 0 },
+      { letter: "R", pts: 21, pthr: 1.50, esi1: 0, esi2: 9, esi3: 10, esi4: 2, esi5: 0 },
+      { letter: "D", pts: 40, pthr: 1.48, esi1: 1, esi2: 9, esi3: 30, esi4: 0, esi5: 0 },
+      { letter: "N", pts: 12, pthr: 1.33, esi1: 0, esi2: 1, esi3: 11, esi4: 0, esi5: 0 },
+      { letter: "A", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "T", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+  {
+    id: "2026-W24",
+    label: "Week of 6/7–6/13",
+    dateRange: "Jun 7–13, 2026",
+    hoursWorked: { G: 30, C: 27, R: 16, N: 26, L: 24, E: 25, H: 17, A: 26, B: 26, O: 16, P: 8, K: 16, F: 20, M: 18, D: 43, J: 3, I: 0, Q: 0, T: 0 },
+    physicians: [
+      { letter: "G", pts: 70, pthr: 2.33, esi1: 0, esi2: 8, esi3: 38, esi4: 24, esi5: 0 },
+      { letter: "C", pts: 61, pthr: 2.26, esi1: 1, esi2: 15, esi3: 42, esi4: 3, esi5: 0 },
+      { letter: "R", pts: 36, pthr: 2.25, esi1: 1, esi2: 7, esi3: 23, esi4: 5, esi5: 0 },
+      { letter: "N", pts: 56, pthr: 2.15, esi1: 0, esi2: 14, esi3: 34, esi4: 8, esi5: 0 },
+      { letter: "L", pts: 50, pthr: 2.08, esi1: 1, esi2: 5, esi3: 29, esi4: 13, esi5: 2 },
+      { letter: "E", pts: 52, pthr: 2.08, esi1: 0, esi2: 6, esi3: 29, esi4: 17, esi5: 0 },
+      { letter: "H", pts: 35, pthr: 2.06, esi1: 0, esi2: 10, esi3: 21, esi4: 3, esi5: 1 },
+      { letter: "A", pts: 52, pthr: 2.00, esi1: 0, esi2: 19, esi3: 32, esi4: 1, esi5: 0 },
+      { letter: "B", pts: 51, pthr: 1.96, esi1: 2, esi2: 7, esi3: 33, esi4: 9, esi5: 0 },
+      { letter: "O", pts: 30, pthr: 1.88, esi1: 0, esi2: 8, esi3: 19, esi4: 2, esi5: 1 },
+      { letter: "P", pts: 15, pthr: 1.88, esi1: 0, esi2: 6, esi3: 9, esi4: 0, esi5: 0 },
+      { letter: "K", pts: 29, pthr: 1.81, esi1: 0, esi2: 7, esi3: 20, esi4: 2, esi5: 0 },
+      { letter: "F", pts: 36, pthr: 1.80, esi1: 1, esi2: 13, esi3: 19, esi4: 2, esi5: 1 },
+      { letter: "M", pts: 32, pthr: 1.78, esi1: 0, esi2: 11, esi3: 21, esi4: 0, esi5: 0 },
+      { letter: "D", pts: 70, pthr: 1.63, esi1: 2, esi2: 23, esi3: 45, esi4: 0, esi5: 0 },
+      { letter: "J", pts: 1, pthr: 0.33, esi1: 0, esi2: 0, esi3: 1, esi4: 0, esi5: 0 },
+      { letter: "I", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "Q", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "T", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+  {
+    id: "2026-W23",
     label: "Week of 5/31–6/6",
-    dateRange: "May 31–Jun 6, 2025",
+    dateRange: "May 31–Jun 6, 2026",
     hoursWorked: { J: 31, C: 27, B: 24, N: 26, G: 27, E: 16, M: 41, L: 31, O: 25, H: 19, R: 18, P: 9, D: 29, F: 18, A: 0, I: 0, K: 0, Q: 0, S: 0, T: 0 },
     physicians: [
       { letter: "J", pts: 86, pthr: 2.77, esi1: 2, esi2: 17, esi3: 54, esi4: 13, esi5: 0 },
@@ -28,9 +82,9 @@ export const SEED_WEEKS = [
     ]
   },
   {
-    id: "2025-W22",
+    id: "2026-W22",
     label: "Week of 5/24–5/30",
-    dateRange: "May 24–30, 2025",
+    dateRange: "May 24–30, 2026",
     hoursWorked: { B: 9, L: 37, J: 17, K: 8, C: 38, H: 43, N: 9, E: 16, O: 24, F: 18, P: 9, G: 20, T: 8, M: 25, D: 41, R: 8, A: 0, I: 0, Q: 0, S: 0 },
     physicians: [
       { letter: "B", pts: 23, pthr: 2.56, esi1: 0, esi2: 8, esi3: 11, esi4: 4, esi5: 0 },
@@ -56,9 +110,9 @@ export const SEED_WEEKS = [
     ]
   },
   {
-    id: "2025-W21",
+    id: "2026-W21",
     label: "Week of 5/17–5/23",
-    dateRange: "May 17–23, 2025",
+    dateRange: "May 17–23, 2026",
     hoursWorked: { J: 33, C: 27, B: 17, G: 39, L: 8, E: 34, Q: 9, H: 25, F: 27, D: 28, R: 34, M: 28, K: 24, N: 7, A: 0, I: 0, O: 0, P: 0, S: 0, T: 0 },
     physicians: [
       { letter: "J", pts: 87, pthr: 2.64, esi1: 0, esi2: 17, esi3: 60, esi4: 10, esi5: 0 },
@@ -84,9 +138,9 @@ export const SEED_WEEKS = [
     ]
   },
   {
-    id: "2025-W20",
+    id: "2026-W20",
     label: "Week of 5/10–5/16",
-    dateRange: "May 10–16, 2025",
+    dateRange: "May 10–16, 2026",
     hoursWorked: { B: 17, E: 8, J: 17, N: 27, C: 36, L: 25, R: 9, G: 25, K: 24, A: 11, P: 9, M: 38, H: 24, F: 18, Q: 9, D: 27, O: 17, I: 0, S: 0, T: 0 },
     physicians: [
       { letter: "B", pts: 45, pthr: 2.65, esi1: 0, esi2: 11, esi3: 24, esi4: 11, esi5: 0 },
@@ -112,9 +166,9 @@ export const SEED_WEEKS = [
     ]
   },
   {
-    id: "2025-W19",
+    id: "2026-W19",
     label: "Week of 5/3–5/9",
-    dateRange: "May 3–9, 2025",
+    dateRange: "May 3–9, 2026",
     hoursWorked: { H: 19, I: 18, E: 26, J: 18, K: 17, C: 27, L: 16, B: 28, G: 24, M: 16, A: 31, N: 16, P: 8, O: 16, D: 27, F: 25, Q: 8, R: 0, S: 0, T: 0 },
     physicians: [
       { letter: "H", pts: 48, pthr: 2.53, esi1: 0, esi2: 9, esi3: 36, esi4: 2, esi5: 0 },
