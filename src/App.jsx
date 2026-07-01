@@ -5,9 +5,10 @@ import Leaderboard from './components/Leaderboard';
 import AdminPanel from './components/AdminPanel';
 import WeekSelector from './components/WeekSelector';
 import TrendView from './components/TrendView';
+import HoursView from './components/HoursView';
 import './App.css';
 
-const DATA_VERSION = 8; // bump this every time you add a new week
+const DATA_VERSION = 9; // bump this every time you add a new week
 
 export default function App() {
   const [weeks, setWeeks] = useLocalStorage('lb-weeks', SEED_WEEKS);
@@ -160,6 +161,9 @@ export default function App() {
             <button className={`nav-btn ${view === 'trends' ? 'active' : ''}`} onClick={() => setView('trends')}>
               Trends
             </button>
+            <button className={`nav-btn ${view === 'hours' ? 'active' : ''}`} onClick={() => setView('hours')}>
+              ⏱ Hours
+            </button>
             {isAdmin ? (
               <>
                 <button className={`nav-btn ${view === 'admin' ? 'active' : ''}`} onClick={() => setView('admin')}>
@@ -240,6 +244,16 @@ export default function App() {
 
         {view === 'trends' && (
           <TrendView weeks={weeks} names={names} currentUser={currentUser} unblinded={unblinded && isAdmin} />
+        )}
+
+        {view === 'hours' && (
+          <HoursView
+            week={selectedWeek}
+            weeks={weeks}
+            names={names}
+            currentUser={currentUser}
+            unblinded={unblinded && isAdmin}
+          />
         )}
 
         {view === 'admin' && isAdmin && (

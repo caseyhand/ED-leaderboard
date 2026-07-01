@@ -366,3 +366,126 @@
 .footer-sep {
   opacity: 0.4;
 }
+
+/* ---- Hours Worked view ---- */
+.hours-view {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.hours-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.hours-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.hours-mode-toggle {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.hours-mode-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.hours-mode-btn:hover {
+  color: var(--text-primary);
+}
+
+.hours-mode-btn.active {
+  background: var(--teal-dim);
+  color: var(--teal);
+}
+
+.hours-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 6px 0 20px;
+}
+
+.hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hours-row {
+  display: grid;
+  grid-template-columns: 96px 1fr 56px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.hours-row-zero {
+  opacity: 0.4;
+}
+
+.hours-row-me {
+  border-color: var(--teal-border);
+  background: var(--teal-dim);
+}
+
+.hours-row-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hours-bar-track {
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hours-bar-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.hours-row-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.hours-empty {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 24px 0;
+  text-align: center;
+}
