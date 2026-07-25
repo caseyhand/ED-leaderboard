@@ -15,11 +15,13 @@ What it does, every time, in this order:
   2. Figures out which weeks are NOT already in src/data.js
   3. Builds week objects in the exact SEED_WEEKS schema
   4. Prepends new weeks (newest first) to src/data.js
-  5. Bumps DATA_VERSION in src/App.jsx by 1
-  6. Prints a summary report with any data anomalies flagged
+  5. If any sheet has a "Provider Name" column, syncs DEFAULT_NAMES
+     in src/data.js from the spreadsheet (sheet is source of truth)
+  6. Bumps DATA_VERSION in src/App.jsx by 1 if anything changed
+  7. Prints a summary report with any data anomalies flagged
 
 It does NOT commit or push. That stays a human (or supervised-agent) decision.
-Safe to run twice: already-present weeks are skipped.
+Safe to run twice: already-present weeks and unchanged names are skipped.
 """
 
 import os
@@ -41,26 +43,19 @@ MIN_HOURS_FLAG = 6      # active week with fewer hours than this gets flagged
 
 def parse_sheet_dates(sheet_name):
     """Parse '6.21-6.27.26' or '5.17.26-5.23.26' into (start_date, end_date)."""
-    nums = [int(n) for n in re.findall(r"\d+", sheet_name)]
-    # Drop any 2-digit year tokens (26), keeping month/day pairs
-    md = [n for n in nums if n != 26 or nums.count(26) > 2]
-    # Safer: rebuild explicitly. Expect patterns M.D-M.D.YY or M.D.YY-M.D.YY
-    parts = re.findall(r"(\d+)\.(\d+)", sheet_name)
-    # parts like [('5','17'),('26','5')...] can misgroup; use split on '-'
     halves = sheet_name.split("-")
     if len(halves) != 2:
         raise ValueError(f"Can't parse sheet name: {sheet_name}")
 
     def md_from(half):
         toks = [int(t) for t in half.split(".") if t.strip().isdigit()]
-        # tokens: [month, day] or [month, day, year]
         return toks[0], toks[1]
 
     m1, d1 = md_from(halves[0])
     m2, d2 = md_from(halves[1])
-    year = 2000 + 26  # all data is 2026; adjust if this tool outlives the year
+    year = 2026  # default; overridden below if a 2-digit year token exists
     yr_toks = [int(t) for t in re.findall(r"\d+", sheet_name)]
-    if yr_toks and yr_toks[-1] < 100 and yr_toks[-1] > 12:
+    if yr_toks and 12 < yr_toks[-1] < 100:
         year = 2000 + yr_toks[-1]
     start = datetime.date(year, m1, d1)
     end = datetime.date(year, m2, d2)
@@ -86,6 +81,15 @@ def labels_for(start, end):
     return label, drange
 
 
+def find_header(rows, required="letter"):
+    """Return (index, normalized header list) of the row containing `required`."""
+    for i, row in enumerate(rows):
+        vals = [str(v).strip().lower() if v is not None else "" for v in row]
+        if required in vals:
+            return i, vals
+    return None, None
+
+
 def parse_workbook(path):
     import openpyxl
     wb = openpyxl.load_workbook(path, data_only=True)
@@ -93,16 +97,10 @@ def parse_workbook(path):
     for name in wb.sheetnames:
         ws = wb[name]
         rows = [[c.value for c in row] for row in ws.iter_rows()]
-        # find header row: a row containing 'letter' (any case)
-        hdr_idx = None
-        for i, row in enumerate(rows):
-            if any(isinstance(v, str) and v.strip().lower() == "letter" for v in row):
-                hdr_idx = i
-                break
+        hdr_idx, hdr = find_header(rows)
         if hdr_idx is None:
             print(f"  ! Skipping sheet '{name}': no LETTER header found")
             continue
-        hdr = [str(v).strip().lower() if v is not None else "" for v in rows[hdr_idx]]
 
         def col(*names):
             for n in names:
@@ -113,7 +111,7 @@ def parse_workbook(path):
 
         c_letter = col("letter")
         c_hours = col("hoursworked")
-        c_pts = col("#pts", "#pts", "pts")
+        c_pts = col("#pts", "pts")
         c_pthr = col("pt/hr", "pthr")
         c_esi = [col(f"esi{k}") for k in range(1, 6)]
 
@@ -151,6 +149,44 @@ def parse_workbook(path):
         start, end = parse_sheet_dates(name)
         weeks.append({"start": start, "end": end, "docs": docs})
     return weeks
+
+
+def extract_names(path):
+    """Collect letter -> provider name from any sheet with a Provider Name column."""
+    import openpyxl
+    wb = openpyxl.load_workbook(path, data_only=True)
+    names = {}
+    for sheet in wb.sheetnames:
+        ws = wb[sheet]
+        rows = [[c.value for c in row] for row in ws.iter_rows()]
+        hdr_idx, hdr = find_header(rows)
+        if hdr_idx is None or "provider name" not in hdr:
+            continue
+        c_name = hdr.index("provider name")
+        c_letter = hdr.index("letter")
+        for row in rows[hdr_idx + 1:]:
+            nm, lt = row[c_name], row[c_letter]
+            if (isinstance(nm, str) and nm.strip()
+                    and isinstance(lt, str) and len(lt.strip()) == 1
+                    and lt.strip().isalpha()):
+                names[lt.strip().upper()] = nm.strip()
+    return names
+
+
+def sync_names(data_src, names):
+    """Rewrite DEFAULT_NAMES in data.js source. Returns (new_src, changed)."""
+    if not names:
+        return data_src, False
+    m = re.search(r"export const DEFAULT_NAMES = \{.*?\};", data_src, re.S)
+    if not m:
+        print("  ! DEFAULT_NAMES not found in data.js — names NOT synced")
+        return data_src, False
+    js = ("export const DEFAULT_NAMES = { "
+          + ", ".join(f'"{k}": "{v}"' for k, v in sorted(names.items()))
+          + " };")
+    if m.group(0) == js:
+        return data_src, False
+    return data_src.replace(m.group(0), js, 1), True
 
 
 def render_week_js(week):
@@ -235,19 +271,32 @@ def main():
 
     print(f"Spreadsheet contains {len(weeks)} week(s); "
           f"{len(new)} new, {len(weeks) - len(new)} already in data.js.")
-    if not new:
+
+    # --- Weeks ---
+    if new:
+        new.sort(key=lambda w: w["start"], reverse=True)
+        blocks = "".join(render_week_js(w) for w in new)
+        anchor = "export const SEED_WEEKS = ["
+        if anchor not in data_src:
+            sys.exit("SEED_WEEKS anchor not found in data.js — NO CHANGES made.")
+        data_src = data_src.replace(anchor, anchor + "\n" + blocks, 1)
+
+    # --- Names ---
+    names = extract_names(xlsx)
+    data_src, names_changed = sync_names(data_src, names)
+    if names:
+        status = "updated" if names_changed else "already current"
+        print(f"Provider names found for {len(names)} letters ({status}).")
+    else:
+        print("No Provider Name column in this spreadsheet; names untouched.")
+
+    if not new and not names_changed:
         print("Nothing to do. data.js and App.jsx untouched.")
         return
 
-    # newest first
-    new.sort(key=lambda w: w["start"], reverse=True)
-    blocks = "".join(render_week_js(w) for w in new)
-    anchor = "export const SEED_WEEKS = ["
-    if anchor not in data_src:
-        sys.exit("SEED_WEEKS anchor not found in data.js — NO CHANGES made.")
-    open(DATA_JS, "w", encoding="utf-8").write(
-        data_src.replace(anchor, anchor + "\n" + blocks, 1))
+    open(DATA_JS, "w", encoding="utf-8").write(data_src)
 
+    # --- Version bump ---
     app_src = open(APP_JSX, encoding="utf-8").read()
     m = re.search(r"const DATA_VERSION = (\d+)", app_src)
     if not m:
@@ -274,10 +323,16 @@ def main():
                 print(f"    - {n}")
         print()
 
+    if names_changed:
+        print("DEFAULT_NAMES synced from spreadsheet:")
+        for k in sorted(names):
+            print(f"  {k}: {names[k]}")
+        print()
+
     print(f"App.jsx: DATA_VERSION {old_v} -> {new_v}")
     print()
     print("Files updated. Next steps (NOT done automatically):")
-    print('  git add src/data.js src/App.jsx')
+    print('  git add src/data.js src/App.jsx update_leaderboard.py')
     print(f'  git commit -m "weekly data update, DATA_VERSION {new_v}"')
     print("  git push  (then verify on Vercel before emailing the group)")
 

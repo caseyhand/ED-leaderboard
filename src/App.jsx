@@ -8,12 +8,12 @@ import TrendView from './components/TrendView';
 import HoursView from './components/HoursView';
 import './App.css';
 
-const DATA_VERSION = 10; // bump this every time you add a new week
+const DATA_VERSION = 11; // bump this every time you add a new week
 
 export default function App() {
   const [weeks, setWeeks] = useLocalStorage('lb-weeks', SEED_WEEKS);
   const [names, setNames] = useLocalStorage('lb-names', DEFAULT_NAMES);
-  const [unblinded, setUnblinded] = useLocalStorage('lb-unblinded', false);
+  const [unblinded, setUnblinded] = useLocalStorage('lb-unblinded', true);
   const [currentUser, setCurrentUser] = useLocalStorage('lb-current-user', null);
   const [dataVersion, setDataVersion] = useLocalStorage('lb-data-version', 0);
   const [selectedWeekIdx, setSelectedWeekIdx] = useState(0);
@@ -29,6 +29,8 @@ export default function App() {
   useEffect(() => {
     if (dataVersion < DATA_VERSION) {
       setWeeks(SEED_WEEKS);
+      setNames(DEFAULT_NAMES);
+      setUnblinded(true);
       setDataVersion(DATA_VERSION);
     }
   }, [dataVersion]);
@@ -70,7 +72,6 @@ export default function App() {
   function handleLogout() {
     setIsAdmin(false);
     setView('leaderboard');
-    setUnblinded(false);
   }
 
   // First-visit letter picker — show if no letter set yet
@@ -86,7 +87,7 @@ export default function App() {
             <div className="onboard-divider" />
 
             <p className="onboard-prompt">
-              Wendy's email included your blinded letter identifier.<br />
+              Wendy's email included your letter identifier.<br />
               Enter it below to highlight your row on the leaderboard.
             </p>
 
@@ -227,7 +228,7 @@ export default function App() {
                 )}
               </div>
             </div>
-            <Leaderboard week={selectedWeek} weeks={weeks} names={names} unblinded={unblinded && isAdmin} currentUser={currentUser} />
+            <Leaderboard week={selectedWeek} weeks={weeks} names={names} unblinded={unblinded} currentUser={currentUser} />
           </>
         )}
 
@@ -236,14 +237,14 @@ export default function App() {
             week={null}
             weeks={weeks}
             names={names}
-            unblinded={unblinded && isAdmin}
+            unblinded={unblinded}
             currentUser={currentUser}
             seasonMode={true}
           />
         )}
 
         {view === 'trends' && (
-          <TrendView weeks={weeks} names={names} currentUser={currentUser} unblinded={unblinded && isAdmin} />
+          <TrendView weeks={weeks} names={names} currentUser={currentUser} unblinded={unblinded} />
         )}
 
         {view === 'hours' && (
@@ -252,7 +253,7 @@ export default function App() {
             weeks={weeks}
             names={names}
             currentUser={currentUser}
-            unblinded={unblinded && isAdmin}
+            unblinded={unblinded}
           />
         )}
 
@@ -273,7 +274,7 @@ export default function App() {
       <footer className="footer">
         <span>ED Physician Productivity Dashboard</span>
         <span className="footer-sep">·</span>
-        <span>Data is blinded by default</span>
+        <span>Names visible by default</span>
         <span className="footer-sep">·</span>
         <span>Vituity / Trinity Health</span>
       </footer>

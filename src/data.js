@@ -1,5 +1,35 @@
 export const SEED_WEEKS = [
   {
+    id: "2026-W28",
+    label: "Week of 7/5–7/11",
+    dateRange: "Jul 5–11, 2026",
+    hoursWorked: { C: 27, L: 27, B: 25, O: 16, V: 35, H: 24, N: 17, M: 23, J: 20, U: 9, K: 16, F: 34, A: 8, D: 27, G: 16, P: 9, Q: 0, I: 0, R: 0, T: 0, E: 0 },
+    physicians: [
+      { letter: "C", pts: 69, pthr: 2.56, esi1: 0, esi2: 13, esi3: 56, esi4: 0, esi5: 0 },
+      { letter: "L", pts: 66, pthr: 2.44, esi1: 2, esi2: 15, esi3: 42, esi4: 7, esi5: 0 },
+      { letter: "B", pts: 61, pthr: 2.44, esi1: 0, esi2: 12, esi3: 38, esi4: 11, esi5: 0 },
+      { letter: "O", pts: 36, pthr: 2.25, esi1: 1, esi2: 4, esi3: 24, esi4: 6, esi5: 1 },
+      { letter: "V", pts: 73, pthr: 2.09, esi1: 0, esi2: 20, esi3: 46, esi4: 7, esi5: 0 },
+      { letter: "H", pts: 50, pthr: 2.08, esi1: 0, esi2: 4, esi3: 34, esi4: 10, esi5: 2 },
+      { letter: "N", pts: 35, pthr: 2.06, esi1: 0, esi2: 9, esi3: 25, esi4: 1, esi5: 0 },
+      { letter: "M", pts: 47, pthr: 2.04, esi1: 0, esi2: 12, esi3: 33, esi4: 2, esi5: 0 },
+      { letter: "J", pts: 40, pthr: 2.00, esi1: 1, esi2: 7, esi3: 25, esi4: 7, esi5: 0 },
+      { letter: "U", pts: 18, pthr: 2.00, esi1: 0, esi2: 4, esi3: 11, esi4: 3, esi5: 0 },
+      { letter: "K", pts: 30, pthr: 1.88, esi1: 1, esi2: 9, esi3: 19, esi4: 1, esi5: 0 },
+      { letter: "F", pts: 60, pthr: 1.76, esi1: 0, esi2: 23, esi3: 33, esi4: 4, esi5: 0 },
+      { letter: "A", pts: 12, pthr: 1.50, esi1: 0, esi2: 0, esi3: 8, esi4: 4, esi5: 0 },
+      { letter: "D", pts: 39, pthr: 1.44, esi1: 0, esi2: 9, esi3: 30, esi4: 0, esi5: 0 },
+      { letter: "G", pts: 22, pthr: 1.38, esi1: 0, esi2: 5, esi3: 15, esi4: 2, esi5: 0 },
+      { letter: "P", pts: 12, pthr: 1.33, esi1: 1, esi2: 3, esi3: 6, esi4: 2, esi5: 0 },
+      { letter: "Q", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "I", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "R", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "T", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "E", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+
+  {
     id: "2026-W27",
     label: "Week of 6/28–7/4",
     dateRange: "Jun 28–Jul 4, 2026",
@@ -250,5 +280,5 @@ export const SEED_WEEKS = [
   },
 ];
 
-export const DEFAULT_NAMES = { "H": "Casey" };
+export const DEFAULT_NAMES = { "A": "Sam Krass", "B": "Daniel DiSandro", "C": "Curtis Lehman", "D": "Colleen Urban", "E": "Russell Yoon", "F": "Pollianne Bianchi", "G": "John Makopoulos", "H": "Steven Hand", "I": "Christopher Kleinberg", "J": "Gregory Casey", "K": "Michele Azer", "L": "Brad Bendesky", "M": "Ronald Lutz", "N": "Wendymarie Gejer", "O": "Denis Dollard", "P": "Sechin Jain", "Q": "Anya McDermott", "R": "Courtney Bethel", "T": "Kari Kulp", "U": "Olivia Bowles", "V": "Samuel Farris" };
 export const ADMIN_PASSWORD = "ed2025";
