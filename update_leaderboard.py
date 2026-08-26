@@ -11,7 +11,8 @@ Usage:
         -> uses a specific file instead
 
 What it does, every time, in this order:
-  1. Reads every sheet in Wendy's spreadsheet
+  1. Reads every weekly sheet in Wendy's spreadsheet (Cumulative tabs and
+     tabs without ESI columns are skipped)
   2. Figures out which weeks are NOT already in src/data.js
   3. Builds week objects in the exact SEED_WEEKS schema
   4. Prepends new weeks (newest first) to src/data.js
@@ -19,6 +20,10 @@ What it does, every time, in this order:
      in src/data.js from the spreadsheet (sheet is source of truth)
   6. Bumps DATA_VERSION in src/App.jsx by 1 if anything changed
   7. Prints a summary report with any data anomalies flagged
+
+Sheets that have a Provider Name column but no Letter column are handled
+by looking the name up in DEFAULT_NAMES from data.js. Unmatched names are
+reported loudly and skipped.
 
 It does NOT commit or push. That stays a human (or supervised-agent) decision.
 Safe to run twice: already-present weeks and unchanged names are skipped.
@@ -36,31 +41,59 @@ APP_JSX = os.path.join(REPO, "src", "App.jsx")
 MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-# Anomaly thresholds — tune as needed
+# Anomaly thresholds, tune as needed
 MIN_PTHR_FLAG = 1.0     # active week below this pt/hr gets flagged
 MIN_HOURS_FLAG = 6      # active week with fewer hours than this gets flagged
 
+# Column aliases. Matched after lowercasing and removing all spaces.
+COL_ALIASES = {
+    "letter": ["letter"],
+    "name":   ["providername", "provider", "name", "physician"],
+    "hours":  ["hoursworked", "hours", "hrs"],
+    "pts":    ["#pts", "pts", "#ptsw/oapp", "patients", "#patients"],
+    "pthr":   ["pt/hr", "pthr", "pts/hr"],
+    "esi1":   ["esi1"], "esi2": ["esi2"], "esi3": ["esi3"],
+    "esi4":   ["esi4"], "esi5": ["esi5"],
+}
+
+
+def norm(v):
+    return str(v).strip().lower().replace(" ", "") if v is not None else ""
+
 
 def parse_sheet_dates(sheet_name):
-    """Parse '6.21-6.27.26' or '5.17.26-5.23.26' into (start_date, end_date)."""
+    """Parse sheet names like '6.21-6.27.26', '5.17.26-5.23.26',
+    '7.26-8.' (end missing day) or '.2-8.8.26' (start missing month)
+    into (start_date, end_date). A Sun-Sat week is assumed when one
+    half is incomplete."""
     halves = sheet_name.split("-")
     if len(halves) != 2:
         raise ValueError(f"Can't parse sheet name: {sheet_name}")
 
-    def md_from(half):
-        toks = [int(t) for t in half.split(".") if t.strip().isdigit()]
-        return toks[0], toks[1]
+    def toks(half):
+        return [int(t) for t in re.findall(r"\d+", half)]
 
-    m1, d1 = md_from(halves[0])
-    m2, d2 = md_from(halves[1])
-    year = 2026  # default; overridden below if a 2-digit year token exists
-    yr_toks = [int(t) for t in re.findall(r"\d+", sheet_name)]
-    if yr_toks and 12 < yr_toks[-1] < 100:
-        year = 2000 + yr_toks[-1]
-    start = datetime.date(year, m1, d1)
-    end = datetime.date(year, m2, d2)
-    if end < start:  # year rollover (e.g. 12/28-1/3)
-        end = datetime.date(year + 1, m2, d2)
+    t1, t2 = toks(halves[0]), toks(halves[1])
+    year = 2026
+    for t in (t2, t1):  # a 2-digit year only counts as the 3rd token of m.d.yy
+        if len(t) >= 3 and 12 < t[2] < 100:
+            year = 2000 + t[2]
+            break
+
+    start = end = None
+    if len(t1) >= 2:
+        start = datetime.date(year, t1[0], t1[1])
+    if len(t2) >= 2:
+        end = datetime.date(year, t2[0], t2[1])
+        if start and end < start:
+            end = datetime.date(year + 1, t2[0], t2[1])
+
+    if start and not end:
+        end = start + datetime.timedelta(days=6)
+    elif end and not start:
+        start = end - datetime.timedelta(days=6)
+    elif not start and not end:
+        raise ValueError(f"Can't parse sheet name: {sheet_name}")
     return start, end
 
 
@@ -81,78 +114,122 @@ def labels_for(start, end):
     return label, drange
 
 
-def find_header(rows, required="letter"):
-    """Return (index, normalized header list) of the row containing `required`."""
+def find_header(rows):
+    """Return (index, normalized header list) of the first row that has a
+    letter column or a provider name column."""
     for i, row in enumerate(rows):
-        vals = [str(v).strip().lower() if v is not None else "" for v in row]
-        if required in vals:
+        vals = [norm(v) for v in row]
+        if any(v in COL_ALIASES["letter"] for v in vals) or \
+           any(v in COL_ALIASES["name"] for v in vals):
             return i, vals
     return None, None
 
 
-def parse_workbook(path):
+def find_col(hdr, key):
+    for alias in COL_ALIASES[key]:
+        for j, h in enumerate(hdr):
+            if h == alias:
+                return j
+    return None
+
+
+def load_default_names(data_src):
+    """letter -> name from DEFAULT_NAMES in data.js."""
+    m = re.search(r"export const DEFAULT_NAMES = \{(.*?)\};", data_src, re.S)
+    if not m:
+        return {}
+    return dict(re.findall(r'"([A-Z])":\s*"([^"]*)"', m.group(1)))
+
+
+def name_key(s):
+    return re.sub(r"[^a-z]", "", str(s).lower())
+
+
+def num(v, default=0):
+    if v is None or v == "":
+        return default
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return default
+
+
+def parse_workbook(path, letter_by_name):
     import openpyxl
     wb = openpyxl.load_workbook(path, data_only=True)
     weeks = []
+    unmatched = {}
     for name in wb.sheetnames:
+        if name.strip().lower().startswith("cumulative"):
+            print(f"  - Skipping sheet '{name}': cumulative tab")
+            continue
         ws = wb[name]
         rows = [[c.value for c in row] for row in ws.iter_rows()]
         hdr_idx, hdr = find_header(rows)
         if hdr_idx is None:
-            print(f"  ! Skipping sheet '{name}': no LETTER header found")
+            print(f"  ! Skipping sheet '{name}': no LETTER or PROVIDER NAME header")
             continue
 
-        def col(*names):
-            for n in names:
-                for j, h in enumerate(hdr):
-                    if h.replace(" ", "") == n:
-                        return j
-            raise ValueError(f"Sheet '{name}': column {names} not found in {hdr}")
+        cols = {k: find_col(hdr, k) for k in COL_ALIASES}
+        missing = [k for k in ("hours", "pts", "pthr", "esi1", "esi2",
+                               "esi3", "esi4", "esi5") if cols[k] is None]
+        if missing:
+            print(f"  ! Skipping sheet '{name}': missing columns {missing}")
+            continue
+        if cols["letter"] is None and cols["name"] is None:
+            print(f"  ! Skipping sheet '{name}': no letter or name column")
+            continue
 
-        c_letter = col("letter")
-        c_hours = col("hoursworked")
-        c_pts = col("#pts", "pts")
-        c_pthr = col("pt/hr", "pthr")
-        c_esi = [col(f"esi{k}") for k in range(1, 6)]
+        try:
+            start, end = parse_sheet_dates(name)
+        except ValueError as e:
+            print(f"  ! Skipping sheet '{name}': {e}")
+            continue
 
         docs = []
         for row in rows[hdr_idx + 1:]:
-            letter = row[c_letter]
-            if not (isinstance(letter, str) and len(letter.strip()) == 1
-                    and letter.strip().isalpha()):
+            letter = None
+            if cols["letter"] is not None:
+                lt = row[cols["letter"]]
+                if isinstance(lt, str) and len(lt.strip()) == 1 and lt.strip().isalpha():
+                    letter = lt.strip().upper()
+            if letter is None and cols["name"] is not None:
+                nm = row[cols["name"]]
+                if isinstance(nm, str) and nm.strip():
+                    letter = letter_by_name.get(name_key(nm))
+                    if letter is None:
+                        unmatched.setdefault(nm.strip(), []).append(name)
+                        continue
+            if letter is None:
                 continue
-            letter = letter.strip().upper()
 
-            def num(v, default=0):
-                if v is None or v == "":
-                    return default
-                try:
-                    return float(v)
-                except (TypeError, ValueError):
-                    return default
-
-            hours = int(num(row[c_hours]))
-            pts = int(num(row[c_pts]))
-            pthr = num(row[c_pthr], default=None)
+            hours = int(num(row[cols["hours"]]))
+            pts = int(num(row[cols["pts"]]))
+            pthr = num(row[cols["pthr"]], default=None)
             if pts == 0 or not pthr:
                 pthr = None
             else:
                 pthr = round(pthr, 2)
-            esi = [int(num(row[c])) for c in c_esi]
+            esi = [int(num(row[cols[f"esi{k}"]])) for k in range(1, 6)]
             docs.append({"letter": letter, "hours": hours, "pts": pts,
                          "pthr": pthr, "esi": esi})
 
         if not docs:
             print(f"  ! Skipping sheet '{name}': no physician rows")
             continue
+        weeks.append({"start": start, "end": end, "docs": docs, "sheet": name})
 
-        start, end = parse_sheet_dates(name)
-        weeks.append({"start": start, "end": end, "docs": docs})
+    if unmatched:
+        print()
+        print("  !! NAMES NOT FOUND IN DEFAULT_NAMES (rows skipped, fix before committing):")
+        for nm, sheets in unmatched.items():
+            print(f"     {nm}  (sheets: {', '.join(sorted(set(sheets)))})")
+        print()
     return weeks
 
 
 def extract_names(path):
-    """Collect letter -> provider name from any sheet with a Provider Name column."""
+    """Collect letter -> provider name from any sheet with both columns."""
     import openpyxl
     wb = openpyxl.load_workbook(path, data_only=True)
     names = {}
@@ -160,10 +237,11 @@ def extract_names(path):
         ws = wb[sheet]
         rows = [[c.value for c in row] for row in ws.iter_rows()]
         hdr_idx, hdr = find_header(rows)
-        if hdr_idx is None or "provider name" not in hdr:
+        if hdr_idx is None:
             continue
-        c_name = hdr.index("provider name")
-        c_letter = hdr.index("letter")
+        c_name, c_letter = find_col(hdr, "name"), find_col(hdr, "letter")
+        if c_name is None or c_letter is None:
+            continue
         for row in rows[hdr_idx + 1:]:
             nm, lt = row[c_name], row[c_letter]
             if (isinstance(nm, str) and nm.strip()
@@ -179,7 +257,7 @@ def sync_names(data_src, names):
         return data_src, False
     m = re.search(r"export const DEFAULT_NAMES = \{.*?\};", data_src, re.S)
     if not m:
-        print("  ! DEFAULT_NAMES not found in data.js — names NOT synced")
+        print("  ! DEFAULT_NAMES not found in data.js, names NOT synced")
         return data_src, False
     js = ("export const DEFAULT_NAMES = { "
           + ", ".join(f'"{k}": "{v}"' for k, v in sorted(names.items()))
@@ -263,10 +341,19 @@ def main():
     if not os.path.exists(xlsx):
         sys.exit(f"File not found: {xlsx}")
     if not os.path.exists(DATA_JS):
-        sys.exit(f"Can't find {DATA_JS} — is this script in the repo root?")
+        sys.exit(f"Can't find {DATA_JS}, is this script in the repo root?")
 
     data_src = open(DATA_JS, encoding="utf-8").read()
-    weeks = parse_workbook(xlsx)
+
+    # Names from data.js, then overlay any letter/name pairs in the sheet,
+    # so sheets without a letter column can still be resolved.
+    default_names = load_default_names(data_src)
+    sheet_names = extract_names(xlsx)
+    merged = dict(default_names)
+    merged.update(sheet_names)
+    letter_by_name = {name_key(v): k for k, v in merged.items()}
+
+    weeks = parse_workbook(xlsx, letter_by_name)
     new = [w for w in weeks if week_id(w["start"]) not in data_src]
 
     print(f"Spreadsheet contains {len(weeks)} week(s); "
@@ -278,17 +365,16 @@ def main():
         blocks = "".join(render_week_js(w) for w in new)
         anchor = "export const SEED_WEEKS = ["
         if anchor not in data_src:
-            sys.exit("SEED_WEEKS anchor not found in data.js — NO CHANGES made.")
+            sys.exit("SEED_WEEKS anchor not found in data.js, NO CHANGES made.")
         data_src = data_src.replace(anchor, anchor + "\n" + blocks, 1)
 
     # --- Names ---
-    names = extract_names(xlsx)
-    data_src, names_changed = sync_names(data_src, names)
-    if names:
+    data_src, names_changed = sync_names(data_src, sheet_names)
+    if sheet_names:
         status = "updated" if names_changed else "already current"
-        print(f"Provider names found for {len(names)} letters ({status}).")
+        print(f"Provider names found for {len(sheet_names)} letters ({status}).")
     else:
-        print("No Provider Name column in this spreadsheet; names untouched.")
+        print("No letter/name pairs in this spreadsheet; names untouched.")
 
     if not new and not names_changed:
         print("Nothing to do. data.js and App.jsx untouched.")
@@ -300,7 +386,7 @@ def main():
     app_src = open(APP_JSX, encoding="utf-8").read()
     m = re.search(r"const DATA_VERSION = (\d+)", app_src)
     if not m:
-        sys.exit("DATA_VERSION not found in App.jsx — data.js updated, "
+        sys.exit("DATA_VERSION not found in App.jsx. data.js updated, "
                  "but you must bump the version manually!")
     old_v, new_v = int(m.group(1)), int(m.group(1)) + 1
     open(APP_JSX, "w", encoding="utf-8").write(
@@ -313,9 +399,10 @@ def main():
         active = [d for d in w["docs"] if d["pts"] > 0]
         top = max(active, key=lambda d: d["pthr"])
         total = sum(d["pts"] for d in active)
-        print(f"ADDED {label}  ({week_id(w['start'])})")
+        print(f"ADDED {label}  ({week_id(w['start'])})  from sheet '{w['sheet']}'")
         print(f"  {len(active)} active physicians, {total} total patients")
-        print(f"  Top producer: {top['letter']} at {top['pthr']:.2f} pt/hr")
+        print(f"  Top producer: {top['letter']} ({merged.get(top['letter'], '?')}) "
+              f"at {top['pthr']:.2f} pt/hr")
         notes = find_anomalies(w)
         if notes:
             print("  FLAGS to review (consider confirming with Wendy):")
@@ -325,8 +412,8 @@ def main():
 
     if names_changed:
         print("DEFAULT_NAMES synced from spreadsheet:")
-        for k in sorted(names):
-            print(f"  {k}: {names[k]}")
+        for k in sorted(sheet_names):
+            print(f"  {k}: {sheet_names[k]}")
         print()
 
     print(f"App.jsx: DATA_VERSION {old_v} -> {new_v}")

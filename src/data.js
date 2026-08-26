@@ -1,5 +1,64 @@
 export const SEED_WEEKS = [
   {
+    id: "2026-W33",
+    label: "Week of 8/9–8/15",
+    dateRange: "Aug 9–15, 2026",
+    hoursWorked: { V: 36, P: 9, J: 25, N: 16, B: 26, A: 9, O: 32, G: 30, F: 18, M: 33, R: 26, E: 8, K: 33, D: 25, L: 0, U: 0, H: 0, I: 0, T: 0, C: 0, Q: 0 },
+    physicians: [
+      { letter: "V", pts: 98, pthr: 2.68, esi1: 2, esi2: 20, esi3: 69, esi4: 7, esi5: 0 },
+      { letter: "P", pts: 23, pthr: 2.56, esi1: 0, esi2: 5, esi3: 14, esi4: 4, esi5: 0 },
+      { letter: "J", pts: 62, pthr: 2.43, esi1: 1, esi2: 14, esi3: 41, esi4: 6, esi5: 0 },
+      { letter: "N", pts: 37, pthr: 2.24, esi1: 0, esi2: 11, esi3: 25, esi4: 1, esi5: 0 },
+      { letter: "B", pts: 55, pthr: 2.12, esi1: 0, esi2: 8, esi3: 35, esi4: 12, esi5: 0 },
+      { letter: "A", pts: 18, pthr: 2.00, esi1: 0, esi2: 6, esi3: 12, esi4: 0, esi5: 0 },
+      { letter: "O", pts: 62, pthr: 1.91, esi1: 0, esi2: 7, esi3: 37, esi4: 18, esi5: 0 },
+      { letter: "G", pts: 57, pthr: 1.90, esi1: 0, esi2: 14, esi3: 28, esi4: 15, esi5: 0 },
+      { letter: "F", pts: 31, pthr: 1.72, esi1: 0, esi2: 10, esi3: 19, esi4: 2, esi5: 0 },
+      { letter: "M", pts: 55, pthr: 1.64, esi1: 0, esi2: 16, esi3: 38, esi4: 1, esi5: 0 },
+      { letter: "R", pts: 42, pthr: 1.62, esi1: 0, esi2: 12, esi3: 25, esi4: 5, esi5: 0 },
+      { letter: "E", pts: 12, pthr: 1.50, esi1: 0, esi2: 1, esi3: 9, esi4: 2, esi5: 0 },
+      { letter: "K", pts: 49, pthr: 1.48, esi1: 0, esi2: 11, esi3: 37, esi4: 1, esi5: 0 },
+      { letter: "D", pts: 35, pthr: 1.40, esi1: 1, esi2: 7, esi3: 26, esi4: 1, esi5: 0 },
+      { letter: "L", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "U", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "H", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "I", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "T", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "C", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "Q", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+  {
+    id: "2026-W32",
+    label: "Week of 8/2–8/8",
+    dateRange: "Aug 2–8, 2026",
+    hoursWorked: { T: 17, C: 18, B: 8, E: 16, Q: 8, H: 27, L: 32, V: 25, U: 9, D: 29, N: 24, I: 9, M: 24, P: 9, R: 22, O: 16, F: 34, K: 0, J: 0, A: 0, G: 0 },
+    physicians: [
+      { letter: "T", pts: 43, pthr: 2.46, esi1: 0, esi2: 6, esi3: 35, esi4: 2, esi5: 0 },
+      { letter: "C", pts: 43, pthr: 2.39, esi1: 1, esi2: 7, esi3: 34, esi4: 1, esi5: 0 },
+      { letter: "B", pts: 20, pthr: 2.35, esi1: 0, esi2: 6, esi3: 11, esi4: 3, esi5: 0 },
+      { letter: "E", pts: 36, pthr: 2.25, esi1: 0, esi2: 5, esi3: 23, esi4: 7, esi5: 1 },
+      { letter: "Q", pts: 18, pthr: 2.25, esi1: 0, esi2: 3, esi3: 13, esi4: 2, esi5: 0 },
+      { letter: "H", pts: 58, pthr: 2.15, esi1: 0, esi2: 20, esi3: 36, esi4: 1, esi5: 1 },
+      { letter: "L", pts: 68, pthr: 2.13, esi1: 0, esi2: 11, esi3: 37, esi4: 19, esi5: 1 },
+      { letter: "V", pts: 53, pthr: 2.12, esi1: 0, esi2: 13, esi3: 38, esi4: 2, esi5: 0 },
+      { letter: "U", pts: 19, pthr: 2.11, esi1: 0, esi2: 7, esi3: 9, esi4: 3, esi5: 0 },
+      { letter: "D", pts: 60, pthr: 2.07, esi1: 1, esi2: 17, esi3: 41, esi4: 1, esi5: 0 },
+      { letter: "N", pts: 49, pthr: 2.04, esi1: 0, esi2: 4, esi3: 34, esi4: 11, esi5: 0 },
+      { letter: "I", pts: 18, pthr: 2.00, esi1: 0, esi2: 3, esi3: 14, esi4: 1, esi5: 0 },
+      { letter: "M", pts: 48, pthr: 1.96, esi1: 1, esi2: 11, esi3: 35, esi4: 1, esi5: 0 },
+      { letter: "P", pts: 17, pthr: 1.89, esi1: 0, esi2: 5, esi3: 12, esi4: 0, esi5: 0 },
+      { letter: "R", pts: 38, pthr: 1.73, esi1: 2, esi2: 11, esi3: 22, esi4: 3, esi5: 0 },
+      { letter: "O", pts: 27, pthr: 1.69, esi1: 0, esi2: 4, esi3: 23, esi4: 0, esi5: 0 },
+      { letter: "F", pts: 56, pthr: 1.65, esi1: 2, esi2: 13, esi3: 34, esi4: 7, esi5: 0 },
+      { letter: "K", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "J", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "A", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "G", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+
+  {
     id: "2026-W31",
     label: "Week of 7/26–8/1",
     dateRange: "Jul 26–Aug 1, 2026",
@@ -370,5 +429,5 @@ export const SEED_WEEKS = [
   },
 ];
 
-export const DEFAULT_NAMES = { "A": "Sam Krass", "B": "Daniel DiSandro", "C": "Curtis Lehman", "D": "Colleen Urban", "E": "Russell Yoon", "F": "Pollianne Bianchi", "G": "John Makopoulos", "H": "Steven Hand", "I": "Christopher Kleinberg", "J": "Gregory Casey", "K": "Michele Azer", "L": "Brad Bendesky", "M": "Ronald Lutz", "N": "Wendymarie Gejer", "O": "Denis Dollard", "P": "Sechin Jain", "Q": "Anya McDermott", "R": "Courtney Bethel", "T": "Kari Kulp", "U": "Olivia Bowles", "V": "Samuel Farris" };
+export const DEFAULT_NAMES = { "A": "Sam Krass", "B": "Daniel DiSandro", "C": "Curtis Lehman", "D": "Colleen Urban", "E": "Russell Yoon", "F": "Pollianne Bianchi", "G": "John Makopoulos", "H": "Steven Hand", "I": "Christopher Kleinberg", "J": "Gregory Casey", "K": "Michele Azer", "L": "Brad Bendesky", "M": "Ronald Lutz", "N": "Wendymarie Gejer", "O": "Denis Dollard", "P": "Sechin Jain", "Q": "Anya McDermott", "R": "Courtney Bethel", "S": "Danielle Canter", "T": "Kari Kulp", "U": "Olivia Bowles", "V": "Samuel Farris" };
 export const ADMIN_PASSWORD = "ed2025";
