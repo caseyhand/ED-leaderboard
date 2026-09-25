@@ -1,5 +1,35 @@
 export const SEED_WEEKS = [
   {
+    id: "2026-W37",
+    label: "Week of 9/6–9/12",
+    dateRange: "Sep 6–12, 2026",
+    hoursWorked: { E: 14, J: 17, G: 24, K: 16, F: 9, H: 25, B: 20, L: 26, C: 29, N: 14, O: 18, M: 25, V: 33, P: 9, R: 12, D: 27, U: 0, I: 0, A: 0, T: 0, Q: 0 },
+    physicians: [
+      { letter: "E", pts: 42, pthr: 2.90, esi1: 0, esi2: 7, esi3: 33, esi4: 2, esi5: 0 },
+      { letter: "J", pts: 46, pthr: 2.71, esi1: 0, esi2: 7, esi3: 37, esi4: 2, esi5: 0 },
+      { letter: "G", pts: 65, pthr: 2.65, esi1: 0, esi2: 7, esi3: 45, esi4: 13, esi5: 0 },
+      { letter: "K", pts: 41, pthr: 2.56, esi1: 0, esi2: 6, esi3: 31, esi4: 4, esi5: 0 },
+      { letter: "F", pts: 23, pthr: 2.56, esi1: 0, esi2: 3, esi3: 18, esi4: 2, esi5: 0 },
+      { letter: "H", pts: 60, pthr: 2.35, esi1: 0, esi2: 10, esi3: 29, esi4: 21, esi5: 0 },
+      { letter: "B", pts: 47, pthr: 2.35, esi1: 2, esi2: 8, esi3: 32, esi4: 5, esi5: 0 },
+      { letter: "L", pts: 58, pthr: 2.23, esi1: 1, esi2: 15, esi3: 35, esi4: 7, esi5: 0 },
+      { letter: "C", pts: 63, pthr: 2.17, esi1: 0, esi2: 12, esi3: 50, esi4: 1, esi5: 0 },
+      { letter: "N", pts: 28, pthr: 2.00, esi1: 1, esi2: 5, esi3: 22, esi4: 0, esi5: 0 },
+      { letter: "O", pts: 35, pthr: 1.94, esi1: 0, esi2: 6, esi3: 25, esi4: 4, esi5: 0 },
+      { letter: "M", pts: 47, pthr: 1.88, esi1: 0, esi2: 8, esi3: 32, esi4: 7, esi5: 0 },
+      { letter: "V", pts: 57, pthr: 1.73, esi1: 0, esi2: 16, esi3: 37, esi4: 4, esi5: 0 },
+      { letter: "P", pts: 15, pthr: 1.67, esi1: 1, esi2: 4, esi3: 8, esi4: 2, esi5: 0 },
+      { letter: "R", pts: 19, pthr: 1.52, esi1: 1, esi2: 5, esi3: 13, esi4: 0, esi5: 0 },
+      { letter: "D", pts: 37, pthr: 1.37, esi1: 0, esi2: 13, esi3: 22, esi4: 2, esi5: 0 },
+      { letter: "U", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "I", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "A", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "T", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+      { letter: "Q", pts: 0, pthr: null, esi1: 0, esi2: 0, esi3: 0, esi4: 0, esi5: 0 },
+    ]
+  },
+
+  {
     id: "2026-W36",
     label: "Week of 8/30–9/5",
     dateRange: "Aug 30–Sep 5, 2026",
