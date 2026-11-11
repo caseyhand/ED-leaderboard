@@ -196,6 +196,8 @@ def parse_workbook(path, letter_by_name):
             if letter is None and cols["name"] is not None:
                 nm = row[cols["name"]]
                 if isinstance(nm, str) and nm.strip():
+                    if not nm.strip()[0].isalpha():
+                        continue  # footnote text in the name column (e.g. "**lower ED Volumes"), not a provider
                     letter = letter_by_name.get(name_key(nm))
                     if letter is None:
                         unmatched.setdefault(nm.strip(), []).append(name)
