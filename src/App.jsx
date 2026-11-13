@@ -8,7 +8,7 @@ import TrendView from './components/TrendView';
 import HoursView from './components/HoursView';
 import './App.css';
 
-const DATA_VERSION = 23; // bump this every time you add a new week
+const DATA_VERSION = 24; // bump this every time you add a new week
 
 export default function App() {
   const [weeks, setWeeks] = useLocalStorage('lb-weeks', SEED_WEEKS);

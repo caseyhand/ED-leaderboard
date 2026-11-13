@@ -3,7 +3,7 @@ export const SEED_WEEKS = [
     id: "2026-W45",
     label: "Week of 11/1–11/7",
     dateRange: "Nov 1–7, 2026",
-    hoursWorked: { B: 26, V: 34, L: 30, C: 27, E: 32, F: 18, G: 16, H: 16, A: 24, P: 17, O: 16, M: 8, K: 8, T: 8, R: 10, D: 36, N: 8, U: 0, J: 0, I: 0, Q: 0 },
+    hoursWorked: { B: 26.5, V: 34.5, L: 30.5, C: 27, E: 32.5, F: 18, G: 16.5, H: 16, A: 24, P: 17, O: 16, M: 8, K: 8, T: 8, R: 10, D: 36, N: 8, U: 0, J: 0, I: 0, Q: 0 },
     physicians: [
       { letter: "B", pts: 67, pthr: 2.53, esi1: 0, esi2: 7, esi3: 57, esi4: 3, esi5: 0 },
       { letter: "V", pts: 85, pthr: 2.46, esi1: 0, esi2: 20, esi3: 57, esi4: 6, esi5: 2 },
@@ -33,7 +33,7 @@ export const SEED_WEEKS = [
     id: "2026-W44",
     label: "Week of 10/25–10/31",
     dateRange: "Oct 25–31, 2026",
-    hoursWorked: { G: 24, J: 27, A: 9, C: 26, K: 16, L: 25, V: 19, B: 17, M: 24, P: 9, Q: 9, N: 8, O: 17, F: 25, D: 27, E: 16, R: 7, H: 24, U: 0, I: 0, T: 0 },
+    hoursWorked: { G: 24, J: 27, A: 9, C: 26, K: 16.5, L: 25, V: 19.5, B: 17, M: 24, P: 9, Q: 9, N: 8.5, O: 17, F: 25, D: 27, E: 16, R: 7, H: 24, U: 0, I: 0, T: 0 },
     physicians: [
       { letter: "G", pts: 58, pthr: 2.42, esi1: 0, esi2: 5, esi3: 34, esi4: 18, esi5: 1 },
       { letter: "J", pts: 63, pthr: 2.33, esi1: 2, esi2: 12, esi3: 45, esi4: 4, esi5: 0 },
@@ -62,7 +62,7 @@ export const SEED_WEEKS = [
     id: "2026-W43",
     label: "Week of 10/18–10/24",
     dateRange: "Oct 18–24, 2026",
-    hoursWorked: { B: 25, J: 22, N: 17, V: 16, C: 27, L: 8, G: 25, R: 8, F: 29, K: 32, H: 32, D: 34, M: 27, O: 17, E: 8, U: 0, P: 0, I: 0, A: 0, T: 0, Q: 0 },
+    hoursWorked: { B: 25.5, J: 22, N: 17, V: 16.5, C: 27, L: 8, G: 25.5, R: 8, F: 29, K: 32, H: 32, D: 34, M: 27, O: 17, E: 8, U: 0, P: 0, I: 0, A: 0, T: 0, Q: 0 },
     physicians: [
       { letter: "B", pts: 72, pthr: 2.82, esi1: 0, esi2: 11, esi3: 36, esi4: 24, esi5: 1 },
       { letter: "J", pts: 56, pthr: 2.55, esi1: 1, esi2: 8, esi3: 40, esi4: 7, esi5: 0 },
@@ -92,7 +92,7 @@ export const SEED_WEEKS = [
     id: "2026-W42",
     label: "Week of 10/11–10/17",
     dateRange: "Oct 11–17, 2026",
-    hoursWorked: { V: 26, N: 16, P: 9, J: 16, C: 26, L: 24, E: 24, B: 17, O: 24, H: 17, F: 27, R: 25, G: 32, M: 23, D: 20, K: 0, U: 0, I: 0, A: 0, T: 0, Q: 0 },
+    hoursWorked: { V: 26.5, N: 16.5, P: 9, J: 16, C: 26, L: 24.5, E: 24, B: 17, O: 24.5, H: 17, F: 27, R: 25.5, G: 32, M: 23, D: 20, K: 0, U: 0, I: 0, A: 0, T: 0, Q: 0 },
     physicians: [
       { letter: "V", pts: 68, pthr: 2.57, esi1: 0, esi2: 18, esi3: 43, esi4: 7, esi5: 0 },
       { letter: "N", pts: 35, pthr: 2.12, esi1: 0, esi2: 3, esi3: 20, esi4: 12, esi5: 0 },
@@ -122,7 +122,7 @@ export const SEED_WEEKS = [
     id: "2026-W41",
     label: "Week of 10/4–10/10",
     dateRange: "Oct 4–10, 2026",
-    hoursWorked: { G: 11, B: 24, E: 24, K: 8, C: 27, J: 16, F: 9, L: 24, V: 46, N: 16, A: 16, P: 9, M: 34, O: 16, R: 9, D: 36, U: 2, Q: 0, I: 0, T: 0, H: 0 },
+    hoursWorked: { G: 11, B: 24.5, E: 24, K: 8, C: 27, J: 16.5, F: 9, L: 24, V: 46, N: 16.5, A: 16, P: 9, M: 34, O: 16, R: 9, D: 36, U: 2, Q: 0, I: 0, T: 0, H: 0 },
     physicians: [
       { letter: "G", pts: 31, pthr: 2.82, esi1: 0, esi2: 5, esi3: 23, esi4: 3, esi5: 0 },
       { letter: "B", pts: 62, pthr: 2.53, esi1: 0, esi2: 14, esi3: 41, esi4: 7, esi5: 0 },
@@ -151,7 +151,7 @@ export const SEED_WEEKS = [
     id: "2026-W40",
     label: "Week of 9/27–10/3",
     dateRange: "Sep 27–Oct 3, 2026",
-    hoursWorked: { J: 8, V: 36, U: 15, N: 24, P: 9, K: 19, B: 9, L: 24, M: 24, C: 26, G: 32, A: 9, D: 36, T: 16, R: 8, O: 8, F: 16, H: 8, Q: 0, I: 0, E: 0 },
+    hoursWorked: { J: 8, V: 36.5, U: 15, N: 24, P: 9, K: 19.5, B: 9, L: 24, M: 24, C: 26, G: 32.5, A: 9, D: 36, T: 16, R: 8, O: 8, F: 16, H: 8, Q: 0, I: 0, E: 0 },
     physicians: [
       { letter: "J", pts: 20, pthr: 2.50, esi1: 0, esi2: 5, esi3: 12, esi4: 3, esi5: 0 },
       { letter: "V", pts: 89, pthr: 2.44, esi1: 1, esi2: 22, esi3: 64, esi4: 2, esi5: 0 },
@@ -180,7 +180,7 @@ export const SEED_WEEKS = [
     id: "2026-W39",
     label: "Week of 9/20–9/26",
     dateRange: "Sep 20–26, 2026",
-    hoursWorked: { B: 16, E: 16, L: 24, J: 25, F: 29, V: 32, H: 16, C: 27, P: 9, N: 16, K: 14, M: 27, O: 25, R: 8, G: 8, D: 34, Q: 0, I: 0, T: 0, U: 0, A: 0 },
+    hoursWorked: { B: 16, E: 16, L: 24.5, J: 25.5, F: 29, V: 32.5, H: 16, C: 27, P: 9, N: 16, K: 14, M: 27.5, O: 25, R: 8.5, G: 8, D: 34, Q: 0, I: 0, T: 0, U: 0, A: 0 },
     physicians: [
       { letter: "B", pts: 45, pthr: 2.81, esi1: 0, esi2: 2, esi3: 28, esi4: 12, esi5: 3 },
       { letter: "E", pts: 38, pthr: 2.38, esi1: 0, esi2: 6, esi3: 19, esi4: 13, esi5: 0 },
@@ -210,7 +210,7 @@ export const SEED_WEEKS = [
     id: "2026-W38",
     label: "Week of 9/13–9/19",
     dateRange: "Sep 13–19, 2026",
-    hoursWorked: { G: 25, P: 9, U: 9, J: 16, K: 25, E: 33, A: 8, F: 27, H: 24, L: 17, C: 26, B: 16, O: 17, M: 22, D: 20, T: 8, N: 2, V: 16, R: 7, I: 0, Q: 0 },
+    hoursWorked: { G: 25, P: 9, U: 9, J: 16.5, K: 25, E: 33, A: 8, F: 27, H: 24, L: 17, C: 26, B: 16.5, O: 17, M: 22, D: 20, T: 8, N: 2, V: 16.5, R: 7, Q: 0, I: 0 },
     physicians: [
       { letter: "G", pts: 61, pthr: 2.44, esi1: 0, esi2: 6, esi3: 39, esi4: 16, esi5: 0 },
       { letter: "P", pts: 22, pthr: 2.44, esi1: 0, esi2: 5, esi3: 17, esi4: 0, esi5: 0 },
@@ -240,7 +240,7 @@ export const SEED_WEEKS = [
     id: "2026-W37",
     label: "Week of 9/6–9/12",
     dateRange: "Sep 6–12, 2026",
-    hoursWorked: { E: 14, J: 17, G: 24, K: 16, F: 9, H: 25, B: 20, L: 26, C: 29, N: 14, O: 18, M: 25, V: 33, P: 9, R: 12, D: 27, U: 0, I: 0, A: 0, T: 0, Q: 0 },
+    hoursWorked: { E: 14.5, J: 17, G: 24.5, K: 16, F: 9, H: 25.5, B: 20, L: 26, C: 29, N: 14, O: 18, M: 25, V: 33, P: 9, R: 12.5, D: 27, Q: 0, I: 0, T: 0, U: 0, A: 0 },
     physicians: [
       { letter: "E", pts: 42, pthr: 2.90, esi1: 0, esi2: 7, esi3: 33, esi4: 2, esi5: 0 },
       { letter: "J", pts: 46, pthr: 2.71, esi1: 0, esi2: 7, esi3: 37, esi4: 2, esi5: 0 },
@@ -270,7 +270,7 @@ export const SEED_WEEKS = [
     id: "2026-W36",
     label: "Week of 8/30–9/5",
     dateRange: "Aug 30–Sep 5, 2026",
-    hoursWorked: { B: 24, J: 16, P: 9, L: 33, V: 20, H: 31, E: 8, F: 9, K: 17, G: 32, R: 14, O: 9, C: 27, N: 25, M: 24, D: 27, I: 0, A: 0, T: 0, Q: 0, U: 2 },
+    hoursWorked: { B: 24, J: 16, P: 9, L: 33, V: 20, H: 31, E: 8, F: 9, K: 17, G: 32, R: 14.5, O: 9, C: 27, N: 25.5, M: 24.5, D: 27, Q: 0, I: 0, T: 0, U: 2, A: 0 },
     physicians: [
       { letter: "B", pts: 57, pthr: 2.38, esi1: 1, esi2: 7, esi3: 40, esi4: 9, esi5: 0 },
       { letter: "J", pts: 36, pthr: 2.25, esi1: 0, esi2: 7, esi3: 25, esi4: 4, esi5: 0 },
@@ -299,7 +299,7 @@ export const SEED_WEEKS = [
     id: "2026-W35",
     label: "Week of 8/23–8/29",
     dateRange: "Aug 23–29, 2026",
-    hoursWorked: { J: 17, B: 25, C: 35, R: 8, K: 17, U: 6, O: 8, I: 9, L: 23, V: 16, N: 16, E: 26, H: 18, F: 18, M: 24, D: 36, G: 24, P: 0, A: 0, T: 0, Q: 0 },
+    hoursWorked: { J: 17, B: 25.5, C: 35, R: 8, K: 17, U: 6, O: 8.5, I: 9, L: 23, V: 16, N: 16, E: 26.5, H: 18, F: 18, M: 24.5, D: 36, G: 24.5, Q: 0, T: 0, A: 0, P: 0 },
     physicians: [
       { letter: "J", pts: 44, pthr: 2.59, esi1: 1, esi2: 9, esi3: 34, esi4: 0, esi5: 0 },
       { letter: "B", pts: 61, pthr: 2.39, esi1: 0, esi2: 13, esi3: 42, esi4: 6, esi5: 0 },
@@ -329,7 +329,7 @@ export const SEED_WEEKS = [
     id: "2026-W34",
     label: "Week of 8/16–8/22",
     dateRange: "Aug 16–22, 2026",
-    hoursWorked: { B: 17, J: 24, L: 19, R: 9, C: 27, V: 31, A: 16, E: 22, F: 27, G: 27, O: 8, H: 32, M: 16, D: 27, K: 16, P: 9, U: 0, N: 0, I: 0, T: 0, Q: 0 },
+    hoursWorked: { B: 17.5, J: 24, L: 19, R: 9, C: 27, V: 31.5, A: 16, E: 22, F: 27, G: 27, O: 8, H: 32, M: 16.5, D: 27, K: 16, P: 9, Q: 0, I: 0, T: 0, U: 0, N: 0 },
     physicians: [
       { letter: "B", pts: 48, pthr: 2.74, esi1: 1, esi2: 6, esi3: 32, esi4: 9, esi5: 0 },
       { letter: "J", pts: 59, pthr: 2.46, esi1: 0, esi2: 15, esi3: 36, esi4: 7, esi5: 1 },
@@ -359,7 +359,7 @@ export const SEED_WEEKS = [
     id: "2026-W33",
     label: "Week of 8/9–8/15",
     dateRange: "Aug 9–15, 2026",
-    hoursWorked: { V: 36, P: 9, J: 25, N: 16, B: 26, A: 9, O: 32, G: 30, F: 18, M: 33, R: 26, E: 8, K: 33, D: 25, L: 0, U: 0, H: 0, I: 0, T: 0, C: 0, Q: 0 },
+    hoursWorked: { V: 36.5, P: 9, J: 25.5, N: 16.5, B: 26, A: 9, O: 32.5, G: 30, F: 18, M: 33.5, R: 26, E: 8, K: 33, D: 25, Q: 0, L: 0, I: 0, C: 0, T: 0, U: 0, H: 0 },
     physicians: [
       { letter: "V", pts: 98, pthr: 2.68, esi1: 2, esi2: 20, esi3: 69, esi4: 7, esi5: 0 },
       { letter: "P", pts: 23, pthr: 2.56, esi1: 0, esi2: 5, esi3: 14, esi4: 4, esi5: 0 },
@@ -388,7 +388,7 @@ export const SEED_WEEKS = [
     id: "2026-W32",
     label: "Week of 8/2–8/8",
     dateRange: "Aug 2–8, 2026",
-    hoursWorked: { T: 17, C: 18, B: 8, E: 16, Q: 8, H: 27, L: 32, V: 25, U: 9, D: 29, N: 24, I: 9, M: 24, P: 9, R: 22, O: 16, F: 34, K: 0, J: 0, A: 0, G: 0 },
+    hoursWorked: { T: 17.5, C: 18, B: 8.5, E: 16, Q: 8, H: 27, L: 32, V: 25, U: 9, D: 30, N: 24, I: 9, M: 24.5, P: 9, R: 22, O: 16, F: 34, J: 0, G: 0, K: 0, A: 0 },
     physicians: [
       { letter: "T", pts: 43, pthr: 2.46, esi1: 0, esi2: 6, esi3: 35, esi4: 2, esi5: 0 },
       { letter: "C", pts: 43, pthr: 2.39, esi1: 1, esi2: 7, esi3: 34, esi4: 1, esi5: 0 },

@@ -16,10 +16,13 @@ What it does, every time, in this order:
   2. Figures out which weeks are NOT already in src/data.js
   3. Builds week objects in the exact SEED_WEEKS schema
   4. Prepends new weeks (newest first) to src/data.js
-  5. If any sheet has a "Provider Name" column, syncs DEFAULT_NAMES
+  5. For weeks already in data.js, rewrites hoursWorked if the spreadsheet
+     disagrees (half-hour shifts are kept as 26.5, never truncated);
+     pts / pt/hr / ESI of existing weeks are never touched
+  6. If any sheet has a "Provider Name" column, syncs DEFAULT_NAMES
      in src/data.js from the spreadsheet (sheet is source of truth)
-  6. Bumps DATA_VERSION in src/App.jsx by 1 if anything changed
-  7. Prints a summary report with any data anomalies flagged
+  7. Bumps DATA_VERSION in src/App.jsx by 1 if anything changed
+  8. Prints a summary report with any data anomalies flagged
 
 Sheets that have a Provider Name column but no Letter column are handled
 by looking the name up in DEFAULT_NAMES from data.js. Unmatched names are
@@ -154,6 +157,21 @@ def num(v, default=0):
         return default
 
 
+def clean_hours(h):
+    """Keep fractional shifts (26.5 stays 26.5); whole numbers stay ints.
+    Earlier versions truncated with int(), which dropped every half hour."""
+    h = round(float(h), 2)
+    return int(h) if h == int(h) else h
+
+
+def hours_js(docs):
+    """hoursWorked map body in data.js form, active (by pt/hr) then inactive."""
+    active = sorted([d for d in docs if d["pts"] > 0],
+                    key=lambda d: (-d["pthr"], -d["pts"]))
+    inactive = [d for d in docs if d["pts"] == 0]
+    return ", ".join(f"{d['letter']}: {d['hours']}" for d in active + inactive)
+
+
 def parse_workbook(path, letter_by_name):
     import openpyxl
     wb = openpyxl.load_workbook(path, data_only=True)
@@ -205,7 +223,7 @@ def parse_workbook(path, letter_by_name):
             if letter is None:
                 continue
 
-            hours = int(num(row[cols["hours"]]))
+            hours = clean_hours(num(row[cols["hours"]]))
             pts = int(num(row[cols["pts"]]))
             pthr = num(row[cols["pthr"]], default=None)
             if pts == 0 or not pthr:
@@ -278,7 +296,7 @@ def render_week_js(week):
                     key=lambda d: (-d["pthr"], -d["pts"]))
     inactive = [d for d in docs if d["pts"] == 0]
 
-    hours = ", ".join(f"{d['letter']}: {d['hours']}" for d in active + inactive)
+    hours = hours_js(docs)
     lines = []
     for d in active + inactive:
         pthr = "null" if d["pthr"] is None else f"{d['pthr']:.2f}"
@@ -295,6 +313,30 @@ def render_week_js(week):
             f'    hoursWorked: {{ {hours} }},\n'
             f'    physicians: [\n{body}\n    ]\n'
             f'  }},\n')
+
+
+def reconcile_hours(data_src, weeks):
+    """For weeks already in data.js, make hoursWorked match the spreadsheet.
+    Only the hoursWorked line is touched; pts / pt/hr / ESI are left alone.
+    Returns (new_src, [(week_id, old_total, new_total), ...])."""
+    fixes = []
+    for w in weeks:
+        wid = week_id(w["start"])
+        m = re.search(r'(id: "' + re.escape(wid) + r'",.*?hoursWorked: \{)([^}]*)(\})',
+                      data_src, re.S)
+        if not m:
+            continue
+        want = hours_js(w["docs"])
+        have = m.group(2).strip()
+        have_map = {k: float(v) for k, v in re.findall(r"([A-Z]): ([\d.]+)", have)}
+        want_map = {d["letter"]: float(d["hours"]) for d in w["docs"]}
+        if have_map == want_map:
+            continue  # same values (order of letters doesn't matter)
+        old_total = sum(have_map.values())
+        new_total = sum(d["hours"] for d in w["docs"])
+        data_src = data_src[:m.start(2)] + " " + want + " " + data_src[m.end(2):]
+        fixes.append((wid, old_total, new_total))
+    return data_src, fixes
 
 
 def find_anomalies(week):
@@ -370,6 +412,14 @@ def main():
             sys.exit("SEED_WEEKS anchor not found in data.js, NO CHANGES made.")
         data_src = data_src.replace(anchor, anchor + "\n" + blocks, 1)
 
+    # --- Hours reconcile (existing weeks whose hours differ from the sheet) ---
+    existing = [w for w in weeks if w not in new]
+    data_src, hour_fixes = reconcile_hours(data_src, existing)
+    if hour_fixes:
+        print(f"Hours corrected for {len(hour_fixes)} existing week(s) to match the spreadsheet:")
+        for wid, old_t, new_t in hour_fixes:
+            print(f"  {wid}: total {old_t:g} -> {new_t:g} hrs")
+
     # --- Names ---
     data_src, names_changed = sync_names(data_src, sheet_names)
     if sheet_names:
@@ -378,7 +428,7 @@ def main():
     else:
         print("No letter/name pairs in this spreadsheet; names untouched.")
 
-    if not new and not names_changed:
+    if not new and not names_changed and not hour_fixes:
         print("Nothing to do. data.js and App.jsx untouched.")
         return
 
